@@ -14,6 +14,7 @@
 #define USE_CANDIDATE_BORDER
 #define USE_MOUSE_EVENTS
 //#define USE_SHARP_COLOR_CODE
+// #define USE_THEME_DARK
 #define USE_PAGER_MARK
 
 //#define _DEBUG_

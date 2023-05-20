@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include <PyWeasel.h>
 
+using std::wstring;
+
 PyWeaselHandler::PyWeaselHandler()
 {
 }

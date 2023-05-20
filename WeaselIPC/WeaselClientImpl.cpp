@@ -141,7 +141,7 @@ void ClientImpl::StartSession()
 		return;
 
 	_WriteClientInfo();
-	UINT ret = _SendMessage(WEASEL_IPC_START_SESSION, 0, 0);
+	RimeSessionId ret = _SendMessage(WEASEL_IPC_START_SESSION, 0, 0);
 	session_id = ret;
 }
 
@@ -168,7 +168,7 @@ bool ClientImpl::Echo()
 	if (!_Active())
 		return false;
 
-	UINT serverEcho = _SendMessage(WEASEL_IPC_ECHO, 0, session_id);
+	RimeSessionId serverEcho = _SendMessage(WEASEL_IPC_ECHO, 0, session_id);
 	return (serverEcho == session_id);
 }
 
@@ -192,10 +192,10 @@ bool ClientImpl::_WriteClientInfo()
 }
 
 
-LRESULT ClientImpl::_SendMessage(WEASEL_IPC_COMMAND Msg, DWORD wParam, DWORD lParam)
+RimeSessionId ClientImpl::_SendMessage(WEASEL_IPC_COMMAND Msg, PARAM wParam, PARAM lParam)
 {
 	try {
-		PipeMessage req{ Msg, wParam, lParam };
+		PipeMessage req{ Msg, static_cast<PARAM>(wParam), static_cast<PARAM>(lParam) };
 		return channel.Transact(req);
 	}
 	catch (DWORD /* ex */) {

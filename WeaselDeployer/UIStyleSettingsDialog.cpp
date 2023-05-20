@@ -43,7 +43,8 @@ LRESULT UIStyleSettingsDialog::OnInitDialog(UINT, WPARAM, LPARAM, BOOL&) {
 	Populate();
 	
 	CenterWindow();
-	BringWindowToTop();
+	SetActiveWindow();
+	// BringWindowToTop();
 	return TRUE;
 }
 

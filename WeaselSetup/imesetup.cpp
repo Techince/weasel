@@ -81,14 +81,39 @@ int install_ime_file(std::wstring& srcPath, const std::wstring& ext, bool hant, 
 	_wsplitpath_s(path, drive, _countof(drive), dir, _countof(dir), NULL, 0, NULL, 0);
 	srcPath = std::wstring(drive) + dir + srcFileName;
 
+#ifdef WIN64
+	GetSystemWow64Directory(path, _countof(path));
+	std::wstring destPath = std::wstring(path) + L"\\weasel" + ext;
+
+	int retval = 0;
+	// 复制 .dll/.ime 到SystemWow64目录
+	if (!copy_file(srcPath, destPath))
+	{
+		if (!silent) MessageBoxW(NULL, destPath.c_str(), L"安装失败", MB_ICONERROR | MB_OK);
+		return 1;
+	}
+	retval += func(destPath, true, true, hant, silent);
+
+	GetSystemDirectoryW(path, _countof(path));
+	destPath = std::wstring(path) + L"\\weasel" + ext;
+	ireplace_last(srcPath, ext, L"x64" + ext);
+
+	// 复制 .dll/.ime 到System32目录
+	if (!copy_file(srcPath, destPath))
+	{
+		if (!silent) MessageBoxW(NULL, destPath.c_str(), L"安装失败", MB_ICONERROR | MB_OK);
+		return 1;
+	}
+	retval += func(destPath, true, false, hant, silent);
+#else
 	GetSystemDirectoryW(path, _countof(path));
 	std::wstring destPath = std::wstring(path) + L"\\weasel" + ext;
 
 	int retval = 0;
-	// 复制 .dll/.ime 到系统目录
+	// 复制 .dll/.ime 到System32目录
 	if (!copy_file(srcPath, destPath))
 	{
-		if (!silent) MessageBoxW(NULL, destPath.c_str(), L"安裝失敗", MB_ICONERROR | MB_OK);
+		if (!silent) MessageBoxW(NULL, destPath.c_str(), L"安装失败", MB_ICONERROR | MB_OK);
 		return 1;
 	}
 	retval += func(destPath, true, false, hant, silent);
@@ -100,21 +125,23 @@ int install_ime_file(std::wstring& srcPath, const std::wstring& ext, bool hant, 
 		PW64RW64FR fnWow64RevertWow64FsRedirection = (PW64RW64FR)GetProcAddress(GetModuleHandle(_T("kernel32.dll")), "Wow64RevertWow64FsRedirection");
 		if (fnWow64DisableWow64FsRedirection == NULL || fnWow64DisableWow64FsRedirection(&OldValue) == FALSE)
 		{
-			if (!silent) MessageBoxW(NULL, L"無法取消文件系統重定向", L"安裝失敗", MB_ICONERROR | MB_OK);
+			if (!silent) MessageBoxW(NULL, L"无法取消文件系统重定向", L"安装失败", MB_ICONERROR | MB_OK);
 			return 1;
 		}
 		if (!copy_file(srcPath, destPath))
 		{
-			if (!silent) MessageBoxW(NULL, destPath.c_str(), L"安裝失敗", MB_ICONERROR | MB_OK);
+			if (!silent) MessageBoxW(NULL, destPath.c_str(), L"安装失败", MB_ICONERROR | MB_OK);
 			return 1;
 		}
 		retval += func(destPath, true, true, hant, silent);
 		if (fnWow64RevertWow64FsRedirection == NULL || fnWow64RevertWow64FsRedirection(OldValue) == FALSE)
 		{
-			if (!silent) MessageBoxW(NULL, L"無法恢復文件系統重定向", L"安裝失敗", MB_ICONERROR | MB_OK);
+			if (!silent) MessageBoxW(NULL, L"无法恢复文件系统重定向", L"安装失败", MB_ICONERROR | MB_OK);
 			return 1;
 		}
 	}
+#endif
+
 	return retval;
 }
 
@@ -128,9 +155,23 @@ int uninstall_ime_file(const std::wstring& ext, bool silent, ime_register_func f
 	retval += func(imePath, false, false, false, silent);
 	if (!delete_file(imePath))
 	{
-		if (!silent) MessageBox(NULL, imePath.c_str(), L"卸載失敗", MB_ICONERROR | MB_OK);
+		if (!silent) MessageBox(NULL, imePath.c_str(), L"卸载失败", MB_ICONERROR | MB_OK);
 		retval += 1;
 	}
+
+#ifdef WIN64
+	imePath.clear();
+	GetSystemWow64Directory(path, _countof(path));
+	imePath = path;
+	imePath += L"\\weasel" + ext;
+	retval += func(imePath, false, true, false, silent);
+
+	if (!delete_file(imePath))
+	{
+		if (!silent) MessageBox(NULL, imePath.c_str(), L"卸载失败", MB_ICONERROR | MB_OK);
+		retval += 1;
+	}
+#else
 	if (is_wow64())
 	{
 		retval += func(imePath, false, true, false, silent);
@@ -139,20 +180,22 @@ int uninstall_ime_file(const std::wstring& ext, bool silent, ime_register_func f
 		PW64RW64FR fnWow64RevertWow64FsRedirection = (PW64RW64FR)GetProcAddress(GetModuleHandle(_T("kernel32.dll")), "Wow64RevertWow64FsRedirection");
 		if (fnWow64DisableWow64FsRedirection == NULL || fnWow64DisableWow64FsRedirection(&OldValue) == FALSE)
 		{
-			if (!silent) MessageBoxW(NULL, L"無法取消文件系統重定向", L"卸載失敗", MB_ICONERROR | MB_OK);
+			if (!silent) MessageBoxW(NULL, L"无法取消文件系统重定向", L"卸载失败", MB_ICONERROR | MB_OK);
 			return 1;
 		}
 		if (!delete_file(imePath))
 		{
-			if (!silent) MessageBoxW(NULL, imePath.c_str(), L"卸載失敗", MB_ICONERROR | MB_OK);
+			if (!silent) MessageBoxW(NULL, imePath.c_str(), L"卸载失败", MB_ICONERROR | MB_OK);
 			retval += 1;
 		}
 		if (fnWow64RevertWow64FsRedirection == NULL || fnWow64RevertWow64FsRedirection(OldValue) == FALSE)
 		{
-			if (!silent) MessageBoxW(NULL, L"無法恢復文件系統重定向", L"卸載失敗", MB_ICONERROR | MB_OK);
+			if (!silent) MessageBoxW(NULL, L"无法恢复文件系统重定向", L"卸载失败", MB_ICONERROR | MB_OK);
 			return 1;
 		}
 	}
+#endif
+
 	return retval;
 }
 
@@ -247,8 +290,8 @@ int register_ime(const std::wstring& ime_path, bool register_ime, bool is_wow64,
 		{
 			DWORD dwErr = GetLastError();
 			WCHAR msg[100];
-			StringCchPrintfW(msg, _countof(msg), L"註冊輸入法錯誤 ImmInstallIME: HKL=%x Err=%x", hKL, dwErr);
-			if (!silent) MessageBox(NULL, msg, L"安裝失敗", MB_ICONERROR | MB_OK);
+			StringCchPrintfW(msg, _countof(msg), L"注册输入法错误 ImmInstallIME: HKL=%x Err=%x", hKL, dwErr);
+			if (!silent) MessageBox(NULL, msg, L"安装失败", MB_ICONERROR | MB_OK);
 			return 1;
 		}
 		return 0;
@@ -260,7 +303,7 @@ int register_ime(const std::wstring& ime_path, bool register_ime, bool is_wow64,
 	LSTATUS ret = RegOpenKey(HKEY_LOCAL_MACHINE, KEYBOARD_LAYOUTS_KEY, &hKey);
 	if (ret != ERROR_SUCCESS)
 	{
-		if (!silent) MessageBox(NULL, KEYBOARD_LAYOUTS_KEY, L"卸載失敗", MB_ICONERROR | MB_OK);
+		if (!silent) MessageBox(NULL, KEYBOARD_LAYOUTS_KEY, L"卸载失败", MB_ICONERROR | MB_OK);
 		return 1;
 	}
 
@@ -402,8 +445,8 @@ int register_text_service(const std::wstring& tsf_path, bool register_ime, bool 
 	else
 	{
 		WCHAR msg[100];
-		StringCchPrintfW(msg, _countof(msg), L"註冊輸入法錯誤 regsvr32.exe %s", params.c_str());
-		if (!silent) MessageBoxW(NULL, msg, L"安装/卸載失败", MB_ICONERROR | MB_OK);
+		StringCchPrintfW(msg, _countof(msg), L"注册输入法错误 regsvr32.exe %s", params.c_str());
+		if (!silent) MessageBoxW(NULL, msg, L"安装/卸载失败", MB_ICONERROR | MB_OK);
 		return 1;
 	}
 
@@ -426,7 +469,7 @@ int install(bool hant, bool silent)
 		                         0, NULL, 0, KEY_ALL_ACCESS, 0, &hKey, NULL);
 	if (FAILED(HRESULT_FROM_WIN32(ret)))
 	{
-		if (!silent) MessageBox(NULL, WEASEL_REG_KEY, L"安裝失敗", MB_ICONERROR | MB_OK);
+		if (!silent) MessageBox(NULL, WEASEL_REG_KEY, L"安装失败", MB_ICONERROR | MB_OK);
 		return 1;
 	}
 
@@ -440,7 +483,7 @@ int install(bool hant, bool silent)
 						(rootDir.length() + 1) * sizeof(WCHAR));
 	if (FAILED(HRESULT_FROM_WIN32(ret)))
 	{
-		if (!silent) MessageBox(NULL, L"無法寫入 WeaselRoot", L"安裝失敗", MB_ICONERROR | MB_OK);
+		if (!silent) MessageBox(NULL, L"无法写入 WeaselRoot", L"安装失败", MB_ICONERROR | MB_OK);
 		return 1;
 	}
 
@@ -450,7 +493,7 @@ int install(bool hant, bool silent)
 						(executable.length() + 1) * sizeof(WCHAR));
 	if (FAILED(HRESULT_FROM_WIN32(ret)))
 	{
-		if (!silent) MessageBox(NULL, L"無法寫入註冊表鍵值 ServerExecutable", L"安裝失敗", MB_ICONERROR | MB_OK);
+		if (!silent) MessageBox(NULL, L"无法写入注册表键值 ServerExecutable", L"安装失败", MB_ICONERROR | MB_OK);
 		return 1;
 	}
 
@@ -459,7 +502,7 @@ int install(bool hant, bool silent)
 	if (retval)
 		return 1;
 
-	if (!silent) MessageBox(NULL, L"可以使【小狼毫】寫字了 :)", L"安裝完成", MB_ICONINFORMATION | MB_OK);
+	if (!silent) MessageBox(NULL, L"可以使【小狼毫】写字了 :)", L"安装完成", MB_ICONINFORMATION | MB_OK);
 	return 0;
 }
 
@@ -477,7 +520,7 @@ int uninstall(bool silent)
 	if (retval)
 		return 1;
 
-	if (!silent) MessageBox(NULL, L"小狼毫 :)", L"卸載完成", MB_ICONINFORMATION | MB_OK);
+	if (!silent) MessageBox(NULL, L"小狼毫 :)", L"卸载完成", MB_ICONINFORMATION | MB_OK);
 	return 0;
 }
 

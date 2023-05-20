@@ -45,7 +45,7 @@ bool ConvertKeyEvent(UINT vkey, KeyInfo kinfo, const LPBYTE keyState, weasel::Ke
 	const int buf_len = 8;
 	static WCHAR buf[buf_len];
 	static BYTE table[256];
-	// 清除Ctrl、Alt鍵狀態，以令ToUnicodeEx()返回字符
+	// 清除Ctrl、Alt键状态，以令ToUnicodeEx()返回字符
 	memcpy(table, keyState, sizeof(table));
 	table[VK_CONTROL] = 0;
 	table[VK_MENU] = 0;

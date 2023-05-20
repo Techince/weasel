@@ -10,14 +10,14 @@ app_options:
     ascii_mode: true
 
 style:
-  color_scheme: aqua
+  color_scheme: dark_temple
   font_face: Microsoft YaHei
   label_font_face: Microsoft YaHei
   comment_font_face: Microsoft YaHei
   font_point: 14
   label_font_point: 14
   comment_font_point: 14
-  horizontal: false
+  horizontal: true
   fullscreen: false
   inline_preedit: false
   preedit_type: composition
@@ -134,7 +134,7 @@ preset_color_schemes:
     comment_text_color: 0x606cff
 
   starcraft:
-    name: 星際我爭霸／StarCraft
+    name: 星际争霸／StarCraft
     author: Contralisk <contralisk@gmail.com>, original artwork by Blizzard Entertainment
     text_color: 0xccaa88
     candidate_text_color: 0x30bb55
@@ -158,7 +158,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0xCE7539
 
   solarized_rock:
-    name: 曬經石／Solarized Rock
+    name: 晒经石／Solarized Rock
     author: "Aben <tntaben@gmail.com>, based on Ethan Schoonover's Solarized color scheme"
     back_color: 0x362b00
     border_color: 0x362b00
@@ -214,7 +214,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0x16c7f7
 
   doraemon:
-    name: "銅鑼衛門／Doraemon"
+    name: "铜锣卫门／Doraemon"
     author: "Patricivs <ipatrickmac@me.com>"
     text_color: 0x1200e5
     back_color: 0xffffff
@@ -229,7 +229,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0xe89f00
 
   espagna:
-    name: "埃斯巴尼亞／España"
+    name: "埃斯巴尼亚／España"
     author: "Patricivs <ipatrickmac@me.com>"
     text_color: 0xffffff
     back_color: 0x230dc3
@@ -244,7 +244,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0x2cb5f7
 
   gholabok:
-    name: "胡蘿菔／Gholabok"
+    name: "胡萝菔／Gholabok"
     author: "Patricivs <ipatrickmac@me.com>"
     text_color: 0xffffff
     back_color: 0x2939e8
@@ -259,7 +259,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0x3d6ded
 
   kuma_shuzboz:
-    name: "熊出沒／Kuma Shuzboz"
+    name: "熊出没／Kuma Shuzboz"
     author: "Patricivs <ipatrickmac@me.com>"
     text_color: 0x000000
     back_color: 0x2db6f8
@@ -289,7 +289,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0xffffff
 
   macau:
-    name: "澳門／Macau"
+    name: "澳门／Macau"
     author: "Patricivs <ipatrickmac@me.com>"
     text_color: 0x00d9ff
     back_color: 0x81a300
@@ -319,7 +319,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0x541ed7
 
   ps4:
-    name: "遊驛四／PS4"
+    name: "游驿四／PS4"
     author: "Patricivs <ipatrickmac@me.com>"
     text_color: 0xffffff
     back_color: 0x000000
@@ -334,7 +334,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0xe89f00
 
   skype:
-    name: "斯蓋普／Skype"
+    name: "斯盖普／Skype"
     author: "Patricivs <ipatrickmac@me.com>"
     text_color: 0xffffff
     back_color: 0xefad00
@@ -349,7 +349,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0xffffff
 
   xbox_silver:
-    name: "銀色叉盒／Xbox Silver"
+    name: "银色叉盒／Xbox Silver"
     author: "Patricivs <ipatrickmac@me.com>"
     text_color: 0x1fc28d
     back_color: 0xefeeee
@@ -394,7 +394,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0x98a12a
 
   smurfs:
-    name: "藍精靈／Smurfs"
+    name: "蓝精灵／Smurfs"
     author: "skoj <skoj@qq.com>"
     text_color: 0xffffff
     back_color: 0xbf7817
@@ -439,7 +439,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0x50c4a8
 
   cool_breeze:
-    name: "清風／Cool Breeze"
+    name: "清风／Cool Breeze"
     author: "skoj <skoj@qq.com>"
     text_color: 0x0000FF
     back_color: 0xFFFBFB
@@ -466,7 +466,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0x394bdd
 
   modern_warfare:
-    name: "現代戰爭／Modern Warfare"
+    name: "现代战争／Modern Warfare"
     author: P1461
     text_color: 0x14bc70
     back_color: 0x0a1b0d
@@ -479,7 +479,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0x676f63
 
   brisk:
-    name: "輕盈／Brisk"
+    name: "轻盈／Brisk"
     author: "skoj <skoj@qq.com>"
     text_color: 0x2238dc
     back_color: 0xffffff
@@ -491,7 +491,7 @@ preset_color_schemes:
     hilited_candidate_back_color: 0xffffff
 
   starcraft_ii:
-    name: "星際爭霸Ⅱ／StarCraft Ⅱ"
+    name: "星际争霸Ⅱ／StarCraft Ⅱ"
     author: "Patricivs <ipatrickmac@me.com>"
     text_color: 0xffffff
     back_color: 0x29190a
@@ -557,7 +557,7 @@ preset_color_schemes:
 
   psionics:
     name: 幽能／Psionics
-    author: 雨過之後、佛振
+    author: 雨过之后、佛振
     text_color: 0xc2c2c2
     back_color: 0x444444
     border_color: 0x444444

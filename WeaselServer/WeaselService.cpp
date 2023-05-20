@@ -57,7 +57,7 @@ BOOL WeaselService::Run(WeaselService &serv)
 	_service = &serv;
 	SERVICE_TABLE_ENTRY serviceTable[] =
 	{
-		{ WEASEL_SERVICE_NAME, ServiceMain },
+		{ const_cast<TCHAR*>(WEASEL_SERVICE_NAME), ServiceMain },
 		{ NULL, NULL }
 	};
 

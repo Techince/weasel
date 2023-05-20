@@ -98,5 +98,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

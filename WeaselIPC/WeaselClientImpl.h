@@ -4,6 +4,7 @@
 
 namespace weasel
 {
+	using PARAM = UINT64;
 
 	class ClientImpl
 	{
@@ -32,13 +33,13 @@ namespace weasel
 		void _InitializeClientInfo();
 		bool _WriteClientInfo();
 
-		LRESULT _SendMessage(WEASEL_IPC_COMMAND Msg, DWORD wParam, DWORD lParam);
+		RimeSessionId _SendMessage(WEASEL_IPC_COMMAND Msg, PARAM wParam, PARAM lParam);
 
 		bool _Connected() const { return channel.Connected(); }
 		bool _Active() const { return channel.Connected() && session_id != 0; }
 
 	private:
-		UINT session_id;
+		RimeSessionId session_id;
 		std::wstring app_name;
 		bool is_ime;
 

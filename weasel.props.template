@@ -3,7 +3,7 @@
   <PropertyGroup Label="UserMacros">
     <BOOST_ROOT>$BOOST_ROOT</BOOST_ROOT>
     <PLATFORM_TOOLSET>$PLATFORM_TOOLSET</PLATFORM_TOOLSET>
-    <PYTHON_HOME>C:\Python27</PYTHON_HOME>
+    <PYTHON_HOME>D:\Program Files\Python\Python311</PYTHON_HOME>
   </PropertyGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>

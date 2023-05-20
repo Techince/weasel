@@ -21,7 +21,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 {
 	if( !IsWindows8Point10OrGreaterEx() )
 	{
-		::MessageBox(NULL, L"僅支持Windows 8.1或更高版本系統", L"系統版本過低", MB_ICONERROR);
+		::MessageBox(NULL, L"仅支持Windows 8.1或更高版本系统", L"系统版本过低", MB_ICONERROR);
 		return 0;
 	}
 	SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);

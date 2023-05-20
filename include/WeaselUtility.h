@@ -2,6 +2,8 @@
 #include <string>
 #include <codecvt>
 
+#pragma warning(disable:4996)
+
 // UTF-8 conversion
 inline const char* wcstoutf8(const WCHAR* wstr)
 {

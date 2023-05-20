@@ -36,25 +36,25 @@ namespace weasel
 		LRESULT OnQueryEndSystemSession(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 		LRESULT OnEndSystemSession(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 		LRESULT OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-		DWORD OnCommand(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnEcho(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnStartSession(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnEndSession(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnKeyEvent(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnShutdownServer(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnFocusIn(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnFocusOut(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnUpdateInputPosition(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnStartMaintenance(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnEndMaintenance(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnCommitComposition(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
-		DWORD OnClearComposition(WEASEL_IPC_COMMAND uMsg, DWORD wParam, DWORD lParam);
+		PARAM OnCommand(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnEcho(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnStartSession(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnEndSession(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnKeyEvent(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnShutdownServer(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnFocusIn(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnFocusOut(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnUpdateInputPosition(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnStartMaintenance(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnEndMaintenance(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnCommitComposition(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
+		PARAM OnClearComposition(WEASEL_IPC_COMMAND uMsg, PARAM wParam, PARAM lParam);
 
 	public:
 		ServerImpl();
 		~ServerImpl();
 
-		int Start();
+		HWND Start();
 		int Stop();
 		int Run();
 

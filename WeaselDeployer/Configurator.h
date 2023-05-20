@@ -12,6 +12,9 @@ public:
 	int UpdateWorkspace(bool report_errors = false);
 	int DictManagement();
 	int SyncUserData();
+
+private:
+	void create_miss_file();
 };
 
 const WCHAR* utf8towcs(const char* utf8_str);

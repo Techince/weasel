@@ -2,6 +2,7 @@
 #include <WeaselUtility.h>
 #include "UIStyleSettings.h"
 
+namespace fs = std::filesystem;
 
 UIStyleSettings::UIStyleSettings()
 {
@@ -46,12 +47,15 @@ static inline bool IfFileExist(std::string filename)
 
 // get preview image from user dir first, then shared_dir
 std::string UIStyleSettings::GetColorSchemePreview(const std::string& color_scheme_id) {
-	std::string shared_dir = std::string(rime_get_api()->get_shared_data_dir());
-	std::string user_dir = std::string(rime_get_api()->get_user_data_dir());
-	if(IfFileExist(user_dir + "\\preview\\color_scheme_" + color_scheme_id + ".png"))
-		return (user_dir + "\\preview\\color_scheme_" + color_scheme_id + ".png");
-	else
-		return (shared_dir + "\\preview\\color_scheme_" + color_scheme_id + ".png");
+	if (fs::path custom{ std::format("{}\\preview\\color_scheme_{}.png",
+		rime_get_api()->get_user_data_dir(), color_scheme_id) };
+		fs::exists(custom))
+	{
+		return custom.string();
+	}
+
+	return std::format("{}\\preview\\color_scheme_{}.png",
+		rime_get_api()->get_shared_data_dir(), color_scheme_id);
 }
 
 std::string UIStyleSettings::GetActiveColorScheme() {

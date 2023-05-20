@@ -4,6 +4,9 @@
 #include <windows.h>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/thread.hpp>
+#include <format>
+
+using RimeSessionId = UINT64;
 
 namespace weasel {
 
@@ -11,8 +14,8 @@ namespace weasel {
 	public:
 		using Stream = boost::interprocess::wbufferstream;
 
-		PipeChannelBase(std::wstring &&pn_cmd, size_t bs, SECURITY_ATTRIBUTES *s);
-		PipeChannelBase(PipeChannelBase &&r);
+		PipeChannelBase(std::wstring &&pn_cmd, size_t bs, SECURITY_ATTRIBUTES *s) noexcept;
+		PipeChannelBase(PipeChannelBase &&r) noexcept;
 		~PipeChannelBase();
 
 	protected:
@@ -50,7 +53,7 @@ namespace weasel {
 	/* Pipe based IPC channel */
 	template<
 		typename _TyMsg,
-		typename _TyRes = DWORD,
+		typename _TyRes = UINT64,
 		size_t _MsgSize = sizeof(_TyMsg),
 		size_t _ResSize = sizeof(_TyRes)>
 	class PipeChannel : public PipeChannelBase
@@ -140,7 +143,7 @@ namespace weasel {
 
 			*reinterpret_cast<Msg *>(pbuff) = msg;
 			size_t data_sz = has_body ? buff_size : _MsgSize;
-
+			// MessageBoxA(NULL, std::format("pipe = {}\npbuff = {}\ndata_sz = {}\nhas_body = {}", (size_t)pipe, pbuff, data_sz, has_body).data(), "In PipeChannel: Send Message", MB_OK);
 			try {
 				_WritePipe(pipe, data_sz, pbuff);
 			}
@@ -155,6 +158,7 @@ namespace weasel {
 		{
 			_TyRes result;
 			_Receive(hpipe, &result, sizeof(result));
+			// MessageBox(nullptr, std::format(L"hpipe = {}\nresult = {}", (size_t)hpipe, result).data(), L"In PipeChannel: Response", MB_OK);
 			return result;
 		}
 

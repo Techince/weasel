@@ -9,6 +9,7 @@
 #include <WeaselIPC.h>
 #include <WeaselUtility.h>
 #include <WeaselVersion.h>
+
 #pragma warning(disable: 4005)
 #include <rime_api.h>
 #include <rime_levers_api.h>
@@ -16,6 +17,7 @@
 
 Configurator::Configurator()
 {
+	create_miss_file();
 }
 
 void Configurator::Initialize()
@@ -103,7 +105,7 @@ int Configurator::UpdateWorkspace(bool report_errors) {
 		CloseHandle(hMutex);
 		if (report_errors)
 		{
-			MessageBox(NULL, L"正在執行另一項部署任務，方纔所做的修改將在輸入法再次啓動後生效。", L"【小狼毫】", MB_OK | MB_ICONINFORMATION);
+			MessageBox(NULL, L"正在执行另一项部署任务，方才所做的修改将在输入法再次启动后生效。", L"【小狼毫】", MB_OK | MB_ICONINFORMATION);
 		}
 		return 1;
 	}
@@ -144,7 +146,7 @@ int Configurator::DictManagement() {
 	{
 		LOG(WARNING) << "another deployer process is running; aborting operation.";
 		CloseHandle(hMutex);
-		MessageBox(NULL, L"正在執行另一項部署任務，請稍候再試。", L"【小狼毫】", MB_OK | MB_ICONINFORMATION);
+		MessageBox(NULL, L"正在执行另一项部署任务，请稍候再试。", L"【小狼毫】", MB_OK | MB_ICONINFORMATION);
 		return 1;
 	}
 
@@ -186,7 +188,7 @@ int Configurator::SyncUserData() {
 	{
 		LOG(WARNING) << "another deployer process is running; aborting operation.";
 		CloseHandle(hMutex);
-		MessageBox(NULL, L"正在執行另一項部署任務，請稍候再試。", L"【小狼毫】", MB_OK | MB_ICONINFORMATION);
+		MessageBox(NULL, L"正在执行另一项部署任务，请稍候再试。", L"【小狼毫】", MB_OK | MB_ICONINFORMATION);
 		return 1;
 	}
 
@@ -216,4 +218,25 @@ int Configurator::SyncUserData() {
 		client.EndMaintenance();
 	}
 	return 0;
+}
+
+void Configurator::create_miss_file()
+{
+	auto user_data_dir{ utf8towcs(weasel_user_data_dir()) };
+
+	auto default_custom{ std::format(L"{}\\default.custom.yaml", user_data_dir) };
+	if (!std::filesystem::directory_entry(std::filesystem::path(default_custom)).exists())
+	{
+		LOG(WARNING) << std::format(L"nonexistent config file '{}'.", default_custom).data();
+		LOG(INFO) << std::format(L"creating config file '{}.'", default_custom).data();
+		std::wofstream out{ default_custom, std::ios::app };
+	}
+
+	auto weasel_custom{ std::format(L"{}\\weasel.custom.yaml", user_data_dir) };
+	if (!std::filesystem::directory_entry(std::filesystem::path(weasel_custom)).exists())
+	{
+		LOG(WARNING) << std::format(L"nonexistent config file '{}'.", weasel_custom).data();
+		LOG(INFO) << std::format(L"creating config file '{}.'", weasel_custom).data();
+		std::wofstream out{ weasel_custom, std::ios::app };
+	}
 }

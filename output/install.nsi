@@ -3,11 +3,12 @@
 !include LogicLib.nsh
 !include MUI2.nsh
 !include x64.nsh
+!define LIBRARY_X64
 
 Unicode true
 
 !ifndef WEASEL_VERSION
-!define WEASEL_VERSION 1.0.0
+!define WEASEL_VERSION 0.14.3
 !endif
 
 !ifndef WEASEL_BUILD
@@ -24,17 +25,17 @@ OutFile "archives\weasel-${WEASEL_VERSION}.${WEASEL_BUILD}-installer.exe"
 
 VIProductVersion "${WEASEL_VERSION}.${WEASEL_BUILD}"
 VIAddVersionKey /LANG=2052 "ProductName" "小狼毫"
-VIAddVersionKey /LANG=2052 "Comments" "Powered by RIME | 中州韻輸入法引擎"
+VIAddVersionKey /LANG=2052 "Comments" "Powered by RIME | 中州韵输入法引擎"
 VIAddVersionKey /LANG=2052 "CompanyName" "式恕堂"
 VIAddVersionKey /LANG=2052 "LegalCopyright" "Copyleft RIME Developers"
-VIAddVersionKey /LANG=2052 "FileDescription" "小狼毫輸入法"
+VIAddVersionKey /LANG=2052 "FileDescription" "小狼毫输入法"
 VIAddVersionKey /LANG=2052 "FileVersion" "${WEASEL_VERSION}"
 
 !define MUI_ICON ..\resource\weasel.ico
 SetCompressor /SOLID lzma
 
 ; The default installation directory
-InstallDir $PROGRAMFILES\Rime
+InstallDir $PROGRAMFILES64\Rime
 
 ; Registry key to check for directory (so if you install again, it will
 ; overwrite the old one automatically)
@@ -74,7 +75,7 @@ Function .onInit
   StrCpy $0 "Upgrade"
   IfSilent uninst 0
   MessageBox MB_OKCANCEL|MB_ICONINFORMATION \
-  "安裝前，我打盤先卸載舊版本的小狼毫。$\n$\n按下「確定」移除舊版本，按下「取消」放棄本次安裝。" \
+  "安装前，我打盘先卸载旧版本的小狼毫。$\n$\n按下「确定」移除旧版本，按下「取消」放弃本次安装。" \
   IDOK uninst
   Abort
 
@@ -97,6 +98,8 @@ FunctionEnd
 Section "Weasel"
 
   SectionIn RO
+
+  SetRegView 64
 
   ; Write the new installation path into the registry
   WriteRegStr HKLM SOFTWARE\Rime\Weasel "InstallDir" "$INSTDIR"
@@ -156,7 +159,7 @@ program_files:
   ; opencc data files
   SetOutPath $INSTDIR\data\opencc
   File "data\opencc\*.json"
-  File "data\opencc\*.ocd*"
+  File "data\opencc\*.ocd2"
   ; images
   SetOutPath $INSTDIR\data\preview
   File "data\preview\*.png"
@@ -180,7 +183,7 @@ program_files:
   ExecWait "$INSTDIR\WeaselDeployer.exe /install"
 
   ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Weasel" "DisplayName" "小狼毫輸入法"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Weasel" "DisplayName" "小狼毫输入法"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Weasel" "UninstallString" '"$INSTDIR\uninstall.exe"'
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Weasel" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Weasel" "NoRepair" 1
@@ -200,18 +203,18 @@ SectionEnd
 ; Optional section (can be disabled by the user)
 Section "Start Menu Shortcuts"
   SetShellVarContext all
-  CreateDirectory "$SMPROGRAMS\小狼毫輸入法"
-  CreateShortCut "$SMPROGRAMS\小狼毫輸入法\【小狼毫】說明書.lnk" "$INSTDIR\README.txt"
-  CreateShortCut "$SMPROGRAMS\小狼毫輸入法\【小狼毫】輸入法設定.lnk" "$INSTDIR\WeaselDeployer.exe" "" "$SYSDIR\shell32.dll" 21
-  CreateShortCut "$SMPROGRAMS\小狼毫輸入法\【小狼毫】用戶詞典管理.lnk" "$INSTDIR\WeaselDeployer.exe" "/dict" "$SYSDIR\shell32.dll" 6
-  CreateShortCut "$SMPROGRAMS\小狼毫輸入法\【小狼毫】用戶資料同步.lnk" "$INSTDIR\WeaselDeployer.exe" "/sync" "$SYSDIR\shell32.dll" 26
-  CreateShortCut "$SMPROGRAMS\小狼毫輸入法\【小狼毫】重新部署.lnk" "$INSTDIR\WeaselDeployer.exe" "/deploy" "$SYSDIR\shell32.dll" 144
-  CreateShortCut "$SMPROGRAMS\小狼毫輸入法\小狼毫算法服務.lnk" "$INSTDIR\WeaselServer.exe" "" "$INSTDIR\WeaselServer.exe" 0
-  CreateShortCut "$SMPROGRAMS\小狼毫輸入法\【小狼毫】用戶文件夾.lnk" "$INSTDIR\WeaselServer.exe" "/userdir" "$SYSDIR\shell32.dll" 126
-  CreateShortCut "$SMPROGRAMS\小狼毫輸入法\【小狼毫】程序文件夾.lnk" "$INSTDIR\WeaselServer.exe" "/weaseldir" "$SYSDIR\shell32.dll" 19
-  CreateShortCut "$SMPROGRAMS\小狼毫輸入法\【小狼毫】檢查新版本.lnk" "$INSTDIR\WeaselServer.exe" "/update" "$SYSDIR\shell32.dll" 13
-  CreateShortCut "$SMPROGRAMS\小狼毫輸入法\【小狼毫】安裝選項.lnk" "$INSTDIR\WeaselSetup.exe" "" "$SYSDIR\shell32.dll" 162
-  CreateShortCut "$SMPROGRAMS\小狼毫輸入法\卸載小狼毫.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
+  CreateDirectory "$SMPROGRAMS\小狼毫输入法"
+  CreateShortCut "$SMPROGRAMS\小狼毫输入法\【小狼毫】说明书.lnk" "$INSTDIR\README.txt"
+  CreateShortCut "$SMPROGRAMS\小狼毫输入法\【小狼毫】输入法设定.lnk" "$INSTDIR\WeaselDeployer.exe" "" "$SYSDIR\shell32.dll" 21
+  CreateShortCut "$SMPROGRAMS\小狼毫输入法\【小狼毫】用户词典管理.lnk" "$INSTDIR\WeaselDeployer.exe" "/dict" "$SYSDIR\shell32.dll" 6
+  CreateShortCut "$SMPROGRAMS\小狼毫输入法\【小狼毫】用户资料同步.lnk" "$INSTDIR\WeaselDeployer.exe" "/sync" "$SYSDIR\shell32.dll" 26
+  CreateShortCut "$SMPROGRAMS\小狼毫输入法\【小狼毫】重新部署.lnk" "$INSTDIR\WeaselDeployer.exe" "/deploy" "$SYSDIR\shell32.dll" 144
+  CreateShortCut "$SMPROGRAMS\小狼毫输入法\小狼毫算法服务.lnk" "$INSTDIR\WeaselServer.exe" "" "$INSTDIR\WeaselServer.exe" 0
+  CreateShortCut "$SMPROGRAMS\小狼毫输入法\【小狼毫】用户文件夹.lnk" "$INSTDIR\WeaselServer.exe" "/userdir" "$SYSDIR\shell32.dll" 126
+  CreateShortCut "$SMPROGRAMS\小狼毫输入法\【小狼毫】程序文件夹.lnk" "$INSTDIR\WeaselServer.exe" "/weaseldir" "$SYSDIR\shell32.dll" 19
+  CreateShortCut "$SMPROGRAMS\小狼毫输入法\【小狼毫】检查新版本.lnk" "$INSTDIR\WeaselServer.exe" "/update" "$SYSDIR\shell32.dll" 13
+  CreateShortCut "$SMPROGRAMS\小狼毫输入法\【小狼毫】安装选项.lnk" "$INSTDIR\WeaselSetup.exe" "" "$SYSDIR\shell32.dll" 162
+  CreateShortCut "$SMPROGRAMS\小狼毫输入法\卸载小狼毫.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
 
 SectionEnd
 
@@ -219,13 +222,14 @@ SectionEnd
 
 ; Uninstaller
 
-Section "Uninstall"
+Section "Uninstall"    
 
   ExecWait '"$INSTDIR\WeaselServer.exe" /quit'
 
   ExecWait '"$INSTDIR\WeaselSetup.exe" /u'
 
   ; Remove registry keys
+  SetRegView 64
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Weasel"
   DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "WeaselServer"
   DeleteRegKey HKLM SOFTWARE\Rime
@@ -241,8 +245,8 @@ Section "Uninstall"
   RMDir /REBOOTOK "$INSTDIR\data"
   RMDir /REBOOTOK "$INSTDIR"
   SetShellVarContext all
-  Delete /REBOOTOK "$SMPROGRAMS\小狼毫輸入法\*.*"
-  RMDir /REBOOTOK "$SMPROGRAMS\小狼毫輸入法"
+  Delete /REBOOTOK "$SMPROGRAMS\小狼毫输入法\*.*"
+  RMDir /REBOOTOK "$SMPROGRAMS\小狼毫输入法"
 
   ; Prompt reboot
   SetRebootFlag true

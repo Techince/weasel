@@ -23,3 +23,8 @@
 #include <wtl/atldlgs.h>
 
 #include <logging.h>
+
+#include <format>
+#include <string>
+#include <filesystem>
+#include <fstream>

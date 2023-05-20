@@ -25,18 +25,18 @@ void test_2()
 {
 	WCHAR resp[] = 
 		L"action=commit\n"
-		L"commit=教這句話上屏=3.14\n"
+		L"commit=教这句话上屏=3.14\n"
 		;
 	DWORD len = wcslen(resp);
 	std::wstring commit;
 	weasel::Context ctx;
 	weasel::Status status;
-	ctx.aux.str = L"從前的值";
+	ctx.aux.str = L"从前的值";
 	weasel::ResponseParser parser(&commit, &ctx, &status);
 	parser(resp, len);
-	BOOST_TEST(commit == L"教這句話上屏=3.14");
+	BOOST_TEST(commit == L"教这句话上屏=3.14");
 	BOOST_TEST(ctx.preedit.empty());
-	BOOST_TEST(ctx.aux.str == L"從前的值");
+	BOOST_TEST(ctx.aux.str == L"从前的值");
 	BOOST_TEST(ctx.cinfo.candies.empty());
 }
 
@@ -44,7 +44,7 @@ void test_3()
 {
 	WCHAR resp[] = 
 		L"action=ctx\n"
-		L"ctx.preedit=寫作串=3.14\n"
+		L"ctx.preedit=写作串=3.14\n"
 		L"ctx.aux=sie'zuoh'chuan=3.14\n"
 		;
 	DWORD len = wcslen(resp);
@@ -54,7 +54,7 @@ void test_3()
 	weasel::ResponseParser parser(&commit, &ctx, &status);
 	parser(resp, len);
 	BOOST_TEST(commit.empty());
-	BOOST_TEST(ctx.preedit.str == L"寫作串=3.14");
+	BOOST_TEST(ctx.preedit.str == L"写作串=3.14");
 	BOOST_TEST(ctx.preedit.attributes.empty());
 	BOOST_TEST(ctx.aux.str == L"sie'zuoh'chuan=3.14");
 }
@@ -63,11 +63,11 @@ void test_4()
 {
 	WCHAR resp[] = 
 		L"action=commit,ctx\n"
-		L"ctx.preedit=候選乙=3.14\n"
+		L"ctx.preedit=候选乙=3.14\n"
 		L"ctx.preedit.cursor=0,3\n"
 		L"ctx.cand.length=2\n"
-		L"ctx.cand.0=候選甲\n"
-		L"ctx.cand.1=候選乙\n"
+		L"ctx.cand.0=候选甲\n"
+		L"ctx.cand.1=候选乙\n"
 		L"ctx.cand.cursor=1\n"
 		L"ctx.cand.page=0/1\n"
 		;
@@ -78,7 +78,7 @@ void test_4()
 	weasel::ResponseParser parser(&commit, &ctx, &status);
 	parser(resp, len);
 	BOOST_TEST(commit.empty());
-	BOOST_TEST(ctx.preedit.str == L"候選乙=3.14");
+	BOOST_TEST(ctx.preedit.str == L"候选乙=3.14");
 	BOOST_ASSERT(1 == ctx.preedit.attributes.size());
 	weasel::TextAttribute attr0 = ctx.preedit.attributes[0];
 	BOOST_TEST_EQ(weasel::HIGHLIGHTED, attr0.type);
@@ -87,8 +87,8 @@ void test_4()
 	BOOST_TEST(ctx.aux.empty());
 	weasel::CandidateInfo& c = ctx.cinfo;
 	BOOST_ASSERT(2 == c.candies.size());
-	BOOST_TEST(c.candies[0].str == L"候選甲");
-	BOOST_TEST(c.candies[1].str == L"候選乙");
+	BOOST_TEST(c.candies[0].str == L"候选甲");
+	BOOST_TEST(c.candies[1].str == L"候选乙");
 	BOOST_TEST_EQ(1, c.highlighted);
 	BOOST_TEST_EQ(0, c.currentPage);
 	BOOST_TEST_EQ(1, c.totalPages);

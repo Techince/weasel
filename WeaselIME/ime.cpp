@@ -38,7 +38,7 @@ BOOL WINAPI ImeConfigure(HKL hKL, HWND hWnd, DWORD dwMode, LPVOID lpData)
 	if (g_is_winlogon) return TRUE;
 
 	// TODO:
-	MessageBox(hWnd, L"本品無設定介面 :)", L"輸入法設定", MB_OK);
+	MessageBox(hWnd, L"本品无设定介面 :)", L"输入法设定", MB_OK);
 	return TRUE;
 }
 

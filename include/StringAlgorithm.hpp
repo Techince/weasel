@@ -32,9 +32,9 @@ inline void ireplace_last(std::wstring& input, const std::wstring& search, const
 
 inline std::string join(const std::set<std::string>& list, const std::string& delim)
 {
-	return std::accumulate(list.begin(), list.end(), std::string(), [&delim](std::string& str1, const std::string& str2)
+	return std::accumulate(list.begin(), list.end(), std::string(), [&delim](std::string_view str1, std::string_view str2)
 	{
-		return str1.empty() ? str2 : str1 + delim + str2;
+		return str1.empty() ? str2.data() : str1.data() + delim + str2.data();
 	});
 }
 

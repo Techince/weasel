@@ -10,7 +10,7 @@ using namespace boost;
 #define _ThrowCode(__c) throw __c
 #define _ThrowIfNot(__c) { DWORD err; if ((err = ::GetLastError()) != __c) throw err; }
 
-PipeChannelBase::PipeChannelBase(std::wstring &&pn_cmd, size_t bs = 4 * 1024, SECURITY_ATTRIBUTES *s = NULL)
+PipeChannelBase::PipeChannelBase(std::wstring &&pn_cmd, size_t bs = 4 * 1024, SECURITY_ATTRIBUTES *s = NULL) noexcept
 	: pname(pn_cmd),
 	write_stream(nullptr),
 	buff_size(bs),
@@ -19,7 +19,7 @@ PipeChannelBase::PipeChannelBase(std::wstring &&pn_cmd, size_t bs = 4 * 1024, SE
 	has_body(false),
 	sa(s) {};
 
-PipeChannelBase::PipeChannelBase(PipeChannelBase &&r)
+PipeChannelBase::PipeChannelBase(PipeChannelBase &&r) noexcept
 	: write_stream(std::move(r.write_stream)),
 	pname(std::move(r.pname)),
 	buff_size(r.buff_size),
