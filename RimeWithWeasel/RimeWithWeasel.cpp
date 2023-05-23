@@ -26,6 +26,7 @@ typedef enum
 	#define TRIMHEAD_REGEX	std::regex("0x", std::regex::icase)
 #endif
 
+#ifdef USE_THEME_DARK
 static inline BOOL IsThemeLight()
 {
 	// only for windows 10 or greater, return false when lower version.
@@ -49,7 +50,7 @@ static inline BOOL IsThemeLight()
 	MessageBox(0, L"open reg failed, return false", L"", 0);
 	return FALSE;
 }
-
+#endif /* USE_THEME_DARK */
 int expand_ibus_modifier(int m)
 {
 	return (m & 0xff) | ((m & 0xff00) << 16);
@@ -109,14 +110,16 @@ void RimeWithWeaselHandler::Initialize()
 	{
 		if (m_ui)
 		{
-			bool is_light = IsThemeLight();
 			_UpdateUIStyle(&config, m_ui, true);
 			m_base_style = m_ui->style();
+#ifdef USE_THEME_DARK
+			bool is_light = IsThemeLight();
 			m_base_style_dark = m_base_style;
 			_UpdateUIStyleColor(&config, m_base_style, true);	// light theme
 			if (!_UpdateUIStyleColor(&config, m_base_style_dark, false))	// dark theme
 				m_base_style_dark = m_base_style;
 			m_ui->style() = is_light ? m_base_style : m_base_style_dark;
+#endif /*  USE_THEME_DARK */
 		}
 		_LoadAppOptions(&config, m_app_options);
 		RimeConfigClose(&config);
@@ -152,12 +155,24 @@ RimeSessionId RimeWithWeaselHandler::AddSession(LPWSTR buffer, EatLine eat)
 	DLOG(INFO) << "Add session: created session_id = " << session_id;
 	_ReadClientInfo(session_id, buffer);
 
+#ifdef USE_THEME_DARK
 	if (m_ui)
+		m_ui->style() = IsThemeLight() ? m_base_style : m_base_style_dark;
+#endif /* USE_THEME_DARK */
+	RIME_STRUCT(RimeStatus, status);
+	if (RimeGetStatus(session_id, &status))
 	{
-		if (IsThemeLight())
-			m_ui->style() = m_base_style;
-		else
-			m_ui->style() = m_base_style_dark;
+		std::string schema_id = status.schema_id;
+		m_last_schema_id = schema_id;
+		_LoadSchemaSpecificSettings(schema_id);
+		{
+			// set inline_preedit option
+			bool inline_preedit = m_ui->style().inline_preedit && _IsSessionTSF(session_id);	
+			RimeSetOption(session_id, "inline_preedit", Bool(inline_preedit));
+			// show soft cursor on weasel panel but not inline
+			RimeSetOption(session_id, "soft_cursor", Bool(!inline_preedit));
+			// set inline_preedit option end
+		}
 	}
 	// show session's welcome message :-) if any
 	if (eat) {
@@ -432,7 +447,11 @@ void RimeWithWeaselHandler::_LoadSchemaSpecificSettings(const std::string& schem
 	RimeConfig config;
 	if (!RimeSchemaOpen(schema_id.c_str(), &config))
 		return;
+#ifdef USE_THEME_DARK
+	m_ui->style() = IsThemeLight() ? m_base_style : m_base_style_dark;
+#else
 	m_ui->style() = m_base_style;
+#endif /* USE_THEME_DARK */
 	_UpdateUIStyle(&config, m_ui, false);
 	// load schema icon start
 	{
@@ -933,6 +952,7 @@ static void _UpdateUIStyle(RimeConfig* config, weasel::UI* ui, bool initialize)
 	else if (style.hilite_padding > -style.margin_y && style.margin_y < 0)
 		style.margin_y = -(style.hilite_padding);
 	// color scheme
+#ifdef USE_THEME_DARK
 	bool is_light = IsThemeLight();
 	std::string color_pre = is_light ? "style/color_scheme" : "style/color_scheme_dark";
 	bool sta = RimeConfigGetString(config, color_pre.c_str(), buffer, BUF_SIZE);
@@ -940,6 +960,10 @@ static void _UpdateUIStyle(RimeConfig* config, weasel::UI* ui, bool initialize)
 	if (!sta) sta = RimeConfigGetString(config, "style/color_scheme", buffer, BUF_SIZE);
 	if (initialize && sta)
 		_UpdateUIStyleColor(config, style, is_light);
+#else
+	if (initialize && RimeConfigGetString(config, "style/color_scheme", buffer, BUF_SIZE))
+		_UpdateUIStyleColor(config, style, true);
+#endif /* USE_THEME_DARK */
 }
 
 static bool _UpdateUIStyleColor(RimeConfig* config, weasel::UIStyle& style, bool is_light)
@@ -980,12 +1004,12 @@ static bool _UpdateUIStyleColor(RimeConfig* config, weasel::UIStyle& style, bool
 
 #ifdef USE_BLUR_UNDER_WINDOWS10
 		// allow set blur with color scheme, more portable
-		Bool blur_window = false;
-		if (RimeConfigGetBool(config, (prefix + "/blur_window").c_str(), &blur_window))
-		{
-			style.blur_window = !!blur_window;
-			style.blur_window = style.blur_window && IsWindows10OrGreaterEx();
-		}
+		//Bool blur_window = false;
+		//if (RimeConfigGetBool(config, (prefix + "/blur_window").c_str(), &blur_window))
+		//{
+		//	style.blur_window = !!blur_window;
+		//	style.blur_window = style.blur_window && IsWindows10OrGreaterEx();
+		//}
 		if(style.blur_window)
 		{
 			// if set blur, make shadow color transparent
@@ -1070,7 +1094,7 @@ static bool _UpdateUIStyleColor(RimeConfig* config, weasel::UIStyle& style, bool
 #endif	/* USE_CANDIDATE_BORDER */
 		if (!RimeConfigGetColor32b(config, (prefix + "/label_color").c_str(), &style.label_text_color, fmt))
 		{
-			style.label_text_color = blend_colors(style.candidate_text_color, style.back_color);
+			style.label_text_color = blend_colors(style.candidate_text_color, style.candidate_back_color);
 		}
 		style.label_text_color &= 0xffffffff;
 		if (!RimeConfigGetColor32b(config, (prefix + "/hilited_label_color").c_str(), &style.hilited_label_text_color, fmt))
@@ -1131,6 +1155,14 @@ void RimeWithWeaselHandler::_GetStatus(weasel::Status & stat, RimeSessionId sess
 			m_last_schema_id = schema_id;
 			RimeSetOption(session_id, "__synced", false); // Sync new schema options with front end
 			_LoadSchemaSpecificSettings(schema_id);
+			{
+				// set inline_preedit option
+				bool inline_preedit = m_ui->style().inline_preedit && _IsSessionTSF(session_id);	
+				RimeSetOption(session_id, "inline_preedit", Bool(inline_preedit));
+				// show soft cursor on weasel panel but not inline
+				RimeSetOption(session_id, "soft_cursor", Bool(!inline_preedit));
+				// set inline_preedit option end
+			}
 		}
 		stat.schema_name = utf8towcs(status.schema_name);
 		stat.ascii_mode = !!status.is_ascii_mode;

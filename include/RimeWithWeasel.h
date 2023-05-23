@@ -53,7 +53,9 @@ private:
 	bool m_vista_greater;
 	std::string m_last_schema_id;
 	weasel::UIStyle m_base_style;
+#ifdef USE_THEME_DARK
 	weasel::UIStyle m_base_style_dark;
+#endif
 
 	std::function<void()> _UpdateUICallback;
 
