@@ -17,7 +17,7 @@
 
 Configurator::Configurator()
 {
-	create_miss_file();
+	// create_miss_file();
 }
 
 void Configurator::Initialize()
@@ -25,6 +25,7 @@ void Configurator::Initialize()
 	RIME_STRUCT(RimeTraits, weasel_traits);
 	weasel_traits.shared_data_dir = weasel_shared_data_dir();
 	weasel_traits.user_data_dir = weasel_user_data_dir();
+	weasel_traits.prebuilt_data_dir = weasel_traits.shared_data_dir; // 下层规则默认是：weasel_shared_data_dir()/build了，这里还采用以前的规则
 	const int len = 20;
 	char utf8_str[len];
 	memset(utf8_str, 0, sizeof(utf8_str));
