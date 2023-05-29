@@ -6,6 +6,8 @@
 #include "fontClasses.h"
 
 #pragma comment(lib, "gdiplus.lib")
+#define IS_FULLSCREENLAYOUT(style)	(style.layout_type == UIStyle::LAYOUT_VERTICAL_FULLSCREEN || style.layout_type == UIStyle::LAYOUT_HORIZONTAL_FULLSCREEN)
+#define NOT_FULLSCREENLAYOUT(style)	(style.layout_type != UIStyle::LAYOUT_VERTICAL_FULLSCREEN && style.layout_type != UIStyle::LAYOUT_HORIZONTAL_FULLSCREEN)
 
 namespace weasel
 {
@@ -65,10 +67,8 @@ namespace weasel
 		virtual IsToRoundStruct GetRoundInfo(int id) = 0;
 		virtual IsToRoundStruct GetTextRoundInfo() = 0;
 		virtual CRect GetContentRect() = 0;
-#ifdef USE_PAGER_MARK
 		virtual CRect GetPrepageRect() = 0;
 		virtual CRect GetNextpageRect() = 0;
-#endif /* USE_PAGER_MARK */
 
 		virtual std::wstring GetLabelText(const std::vector<Text> &labels, int id, const wchar_t *format) const = 0;
 		virtual bool IsInlinePreedit() const = 0;
@@ -77,11 +77,9 @@ namespace weasel
 		
 		int offsetX = 0;
 		int offsetY = 0;
-#ifdef USE_HILITE_MARK
 		int MARK_WIDTH = 4;
 		int MARK_GAP = 8;
 		int MARK_HEIGHT = 0;
-#endif	/* USE_HILITE_MARK */
 
 	protected:
 		const UIStyle &_style;

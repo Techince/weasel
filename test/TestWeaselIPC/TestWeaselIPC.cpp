@@ -51,7 +51,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 bool launch_server()
 {
-	int ret = (int)ShellExecute( NULL, L"open", L"TestWeaselIPC.exe", L"/start", NULL, SW_NORMAL);
+	auto ret = (size_t)ShellExecute( NULL, L"open", L"TestWeaselIPC.exe", L"/start", NULL, SW_NORMAL);
 	if (ret <= 32)
 	{
 		std::cerr << "failed to launch server." << std::endl;

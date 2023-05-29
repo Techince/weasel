@@ -76,6 +76,7 @@ void UIImpl::ShowWithTimeout(DWORD millisec)
 	SetTimer(panel.m_hWnd, AUTOHIDE_TIMER, millisec, &UIImpl::OnTimer);
 	timer = UINT_PTR(this);
 }
+
 VOID CALLBACK UIImpl::OnTimer(
   _In_  HWND hwnd,
   _In_  UINT uMsg,

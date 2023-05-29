@@ -98,7 +98,7 @@ LRESULT ServerImpl::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 	default:;
 	}
 
-	std::map<UINT, CommandHandler>::iterator it = m_MenuHandlers.find(uID);
+	auto it = m_MenuHandlers.find(uID);
 	if (it == m_MenuHandlers.end())
 	{
 		bHandled = FALSE;
@@ -413,7 +413,7 @@ void Server::SetRequestHandler(RequestHandler* pHandler)
 	m_pImpl->SetRequestHandler(pHandler);
 }
 
-void Server::AddMenuHandler(UINT uID, CommandHandler handler)
+void Server::AddMenuHandler(PARAM uID, CommandHandler handler)
 {
 	m_pImpl->AddMenuHandler(uID, handler);
 }

@@ -62,7 +62,7 @@ namespace weasel
 		{
 			m_pRequestHandler = pHandler;
 		}
-		void AddMenuHandler(UINT uID, CommandHandler &handler)
+		void AddMenuHandler(PARAM uID, CommandHandler &handler)
 		{
 			m_MenuHandlers[uID] = handler;
 		}
@@ -75,7 +75,7 @@ namespace weasel
 		std::unique_ptr<PipeServer> channel;
 		std::unique_ptr<boost::thread> pipeThread;
 		RequestHandler *m_pRequestHandler;  // reference
-		std::map<UINT, CommandHandler> m_MenuHandlers;
+		std::map<PARAM, CommandHandler> m_MenuHandlers;
 		HMODULE m_hUser32Module;
 		SecurityAttribute sa;
 	};

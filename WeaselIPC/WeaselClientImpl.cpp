@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "WeaselClientImpl.h"
 #include <StringAlgorithm.hpp>
+// #include <logging.h>
 
 using namespace weasel;
 
@@ -71,7 +72,7 @@ bool ClientImpl::ProcessKeyEvent(KeyEvent const& keyEvent)
 	if (!_Active())
 		return false;
 
-	LRESULT ret = _SendMessage(WEASEL_IPC_PROCESS_KEY_EVENT, keyEvent, session_id);
+	auto ret = _SendMessage(WEASEL_IPC_PROCESS_KEY_EVENT, keyEvent, session_id);
 	return ret != 0;
 }
 
@@ -80,7 +81,7 @@ bool ClientImpl::CommitComposition()
 	if (!_Active())
 		return false;
 
-	LRESULT ret = _SendMessage(WEASEL_IPC_COMMIT_COMPOSITION, 0, session_id);
+	auto ret = _SendMessage(WEASEL_IPC_COMMIT_COMPOSITION, 0, session_id);
 	return ret != 0;
 }
 
@@ -89,7 +90,7 @@ bool ClientImpl::ClearComposition()
 	if (!_Active())
 		return false;
 
-	LRESULT ret = _SendMessage(WEASEL_IPC_CLEAR_COMPOSITION, 0, session_id);
+	auto ret = _SendMessage(WEASEL_IPC_CLEAR_COMPOSITION, 0, session_id);
 	return ret != 0;
 }
 
@@ -130,7 +131,7 @@ void ClientImpl::FocusOut()
 	_SendMessage(WEASEL_IPC_FOCUS_OUT, 0, session_id);
 }
 
-void ClientImpl::TrayCommand(UINT menuId)
+void ClientImpl::TrayCommand(PARAM menuId)
 {
 	_SendMessage(WEASEL_IPC_TRAY_COMMAND, menuId, session_id);
 }
@@ -141,7 +142,8 @@ void ClientImpl::StartSession()
 		return;
 
 	_WriteClientInfo();
-	RimeSessionId ret = _SendMessage(WEASEL_IPC_START_SESSION, 0, 0);
+	auto ret = _SendMessage(WEASEL_IPC_START_SESSION, 0, 0);
+	// LOG(INFO) << std::format("Create a session id: {}.", ret).data();
 	session_id = ret;
 }
 
@@ -195,7 +197,7 @@ bool ClientImpl::_WriteClientInfo()
 RimeSessionId ClientImpl::_SendMessage(WEASEL_IPC_COMMAND Msg, PARAM wParam, PARAM lParam)
 {
 	try {
-		PipeMessage req{ Msg, static_cast<PARAM>(wParam), static_cast<PARAM>(lParam) };
+		PipeMessage req{ Msg, wParam, lParam };
 		return channel.Transact(req);
 	}
 	catch (DWORD /* ex */) {
@@ -279,7 +281,7 @@ void Client::EndMaintenance()
 	m_pImpl->EndMaintenance();
 }
 
-void Client::TrayCommand(UINT menuId)
+void Client::TrayCommand(PARAM menuId)
 {
 	m_pImpl->TrayCommand(menuId);
 }

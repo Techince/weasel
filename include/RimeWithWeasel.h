@@ -45,17 +45,14 @@ private:
 	void _GetContext(weasel::Context &ctx, RimeSessionId session_id);
 
 	bool _IsSessionTSF(RimeSessionId session_id);
+	void _UpdateInlinePreeditStatus(RimeSessionId session_id);
 
 	AppOptionsByAppName m_app_options;
 	weasel::UI* m_ui;  // reference
 	RimeSessionId m_active_session;
 	bool m_disabled;
-	bool m_vista_greater;
 	std::string m_last_schema_id;
 	weasel::UIStyle m_base_style;
-#ifdef USE_THEME_DARK
-	weasel::UIStyle m_base_style_dark;
-#endif
 
 	std::function<void()> _UpdateUICallback;
 

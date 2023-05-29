@@ -68,11 +68,12 @@ LRESULT UIStyleSettingsDialog::OnColorSchemeSelChange(WORD, WORD, HWND, BOOL&) {
 }
 
 void UIStyleSettingsDialog::Preview(int index) {
+	namespace fs = std::filesystem;
 	if (index < 0 || index >= (int)preset_.size()) return;
-	const std::string file_path(settings_->GetColorSchemePreview(preset_[index].color_scheme_id));
-	if (file_path.empty()) return;
+	fs::path file_path(settings_->GetColorSchemePreview(preset_[index].color_scheme_id));
+	if (!fs::exists(file_path)) return;
 	image_.Destroy();
-	image_.Load(utf8towcs(file_path.c_str()));
+	image_.Load(file_path.wstring().data());
 	if (!image_.IsNull()) {
 		preview_.SetBitmap(image_);
 	}

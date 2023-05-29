@@ -47,6 +47,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WeaselDeployer", "WeaselDep
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WeaselSetup", "WeaselSetup\WeaselSetup.vcxproj", "{04B795DB-A22B-4657-9350-29F04B8FB8F6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorTest", "ColorTest\ColorTest.vcxproj", "{58D4B444-6DBA-426A-A4CD-BCB57686DD29}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -173,6 +175,16 @@ Global
 		{04B795DB-A22B-4657-9350-29F04B8FB8F6}.ReleaseHant|Win32.ActiveCfg = Release|Win32
 		{04B795DB-A22B-4657-9350-29F04B8FB8F6}.ReleaseHant|Win32.Build.0 = Release|Win32
 		{04B795DB-A22B-4657-9350-29F04B8FB8F6}.ReleaseHant|x64.ActiveCfg = Release|Win32
+		{58D4B444-6DBA-426A-A4CD-BCB57686DD29}.Debug|Win32.ActiveCfg = Debug|Win32
+		{58D4B444-6DBA-426A-A4CD-BCB57686DD29}.Debug|Win32.Build.0 = Debug|Win32
+		{58D4B444-6DBA-426A-A4CD-BCB57686DD29}.Debug|x64.ActiveCfg = Debug|x64
+		{58D4B444-6DBA-426A-A4CD-BCB57686DD29}.Debug|x64.Build.0 = Debug|x64
+		{58D4B444-6DBA-426A-A4CD-BCB57686DD29}.Release|Win32.ActiveCfg = Release|Win32
+		{58D4B444-6DBA-426A-A4CD-BCB57686DD29}.Release|x64.ActiveCfg = Release|x64
+		{58D4B444-6DBA-426A-A4CD-BCB57686DD29}.ReleaseHant|Win32.ActiveCfg = Release|Win32
+		{58D4B444-6DBA-426A-A4CD-BCB57686DD29}.ReleaseHant|Win32.Build.0 = Release|Win32
+		{58D4B444-6DBA-426A-A4CD-BCB57686DD29}.ReleaseHant|x64.ActiveCfg = Release|x64
+		{58D4B444-6DBA-426A-A4CD-BCB57686DD29}.ReleaseHant|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

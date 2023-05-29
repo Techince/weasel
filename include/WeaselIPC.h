@@ -80,8 +80,8 @@ namespace weasel
 		virtual BOOL ProcessKeyEvent(KeyEvent keyEvent, RimeSessionId session_id, EatLine eat) { return FALSE; }
 		virtual void CommitComposition(RimeSessionId session_id) {}
 		virtual void ClearComposition(RimeSessionId session_id) {}
-		virtual void FocusIn(DWORD param, RimeSessionId session_id) {}
-		virtual void FocusOut(DWORD param, RimeSessionId session_id) {}
+		virtual void FocusIn(PARAM param, RimeSessionId session_id) {}
+		virtual void FocusOut(PARAM param, RimeSessionId session_id) {}
 		virtual void UpdateInputPosition(RECT const& rc, RimeSessionId session_id) {}
 		virtual void StartMaintenance() {}
 		virtual void EndMaintenance() {}
@@ -141,7 +141,7 @@ namespace weasel
 		// 输入窗口失去焦点
 		void FocusOut();
 		// 托盘菜单
-		void TrayCommand(UINT menuId);
+		void TrayCommand(PARAM menuId);
 		// 读取server返回的数据
 		bool GetResponseData(ResponseHandler handler);
 
@@ -163,7 +163,7 @@ namespace weasel
 		int Run();
 
 		void SetRequestHandler(RequestHandler* pHandler);
-		void AddMenuHandler(UINT uID, CommandHandler handler);
+		void AddMenuHandler(PARAM uID, CommandHandler handler);
 		HWND GetHWnd();
 
 	private:

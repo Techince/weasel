@@ -66,7 +66,22 @@ RequestExecutionLevel admin
 
 ;--------------------------------
 
+!macro TIP_WHEN_AMD64_INSTALLER_RUNAT_X86
+!ifdef LIBRARY_X64
+  ${If} ${RunningX64}
+  ${else}
+     MessageBox MB_OK|MB_ICONINFORMATION "请在64位操作系统下运行。"
+     Abort
+  ${EndIf}
+!endif
+!macroend
+
 Function .onInit
+  !insertmacro TIP_WHEN_AMD64_INSTALLER_RUNAT_X86
+  SetShellVarContext all
+
+  SetRegView 64
+
   ReadRegStr $R0 HKLM \
   "Software\Microsoft\Windows\CurrentVersion\Uninstall\Weasel" \
   "UninstallString"

@@ -1,10 +1,11 @@
 #pragma once
 #include <msctf.h>
+#include <WeaselUI.h>
 
 class CLangBarItemButton : public ITfLangBarItemButton, public ITfSource
 {
 public:
-	CLangBarItemButton(com_ptr<WeaselTSF> pTextService, REFGUID guid);
+	CLangBarItemButton(com_ptr<WeaselTSF> pTextService, REFGUID guid, weasel::UIStyle& style);
 	~CLangBarItemButton();
 
 	/* IUnknown */
@@ -22,7 +23,7 @@ public:
 	STDMETHODIMP OnClick(TfLBIClick click, POINT pt, const RECT *prcArea);
 	STDMETHODIMP InitMenu(ITfMenu *pMenu);
 	STDMETHODIMP OnMenuSelect(UINT wID);
-	STDMETHODIMP GetIcon(HICON *phIcon);
+	STDMETHODIMP GetIcon(HICON* phIcon);
 	STDMETHODIMP GetText(BSTR *pbstrText);
 
 	/* ITfSource */
@@ -39,5 +40,7 @@ private:
 	LONG _cRef; /* COM Reference count */
 	DWORD _status;
 	bool ascii_mode;
+	weasel::UIStyle& _style;
+	std::wstring _current_schema_zhung_icon;
+	std::wstring _current_schema_ascii_icon;
 };
-

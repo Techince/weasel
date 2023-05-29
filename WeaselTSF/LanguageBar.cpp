@@ -2,6 +2,8 @@
 #include <resource.h>
 #include "WeaselTSF.h"
 #include "LanguageBar.h"
+#include "CandidateList.h"
+// #include <format>
 
 static const DWORD LANGBARITEMSINK_COOKIE = 0x42424242;
 
@@ -32,8 +34,8 @@ static void HMENU2ITfMenu(HMENU hMenu, ITfMenu *pTfMenu)
 	}
 }
 
-CLangBarItemButton::CLangBarItemButton(com_ptr<WeaselTSF> pTextService, REFGUID guid)
-	: _status(0)
+CLangBarItemButton::CLangBarItemButton(com_ptr<WeaselTSF> pTextService, REFGUID guid, weasel::UIStyle& style)
+	: _status(0), _style{ style }, _current_schema_zhung_icon{}, _current_schema_ascii_icon{}
 {
 	DllAddRef();
 
@@ -151,16 +153,52 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 	return S_OK;
 }
 
-STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
+STDAPI CLangBarItemButton::GetIcon(HICON* phIcon)
 {
+	HINSTANCE hInst;
+	std::wstring_view name;
+	UINT fuLoad;
+
+	if (ascii_mode)
+	{
+		if (_style.current_ascii_icon.empty())
+		{
+			hInst = g_hInst;
+			name = MAKEINTRESOURCE(IDI_EN);
+			fuLoad = LR_SHARED;
+		}
+		else
+		{
+			hInst = nullptr;
+			name = _style.current_ascii_icon;
+			fuLoad = LR_LOADFROMFILE;
+		}
+	}
+	else
+	{
+		if (_style.current_zhung_icon.empty())
+		{
+			hInst = g_hInst;
+			name = MAKEINTRESOURCE(IDI_ZH);
+			fuLoad = LR_SHARED;
+		}
+		else
+		{
+			hInst = nullptr;
+			name = _style.current_zhung_icon;
+			fuLoad = LR_LOADFROMFILE;
+		}
+	}
+
 	*phIcon = (HICON) LoadImageW(
-		g_hInst,
-		MAKEINTRESOURCEW(ascii_mode ? IDI_EN : IDI_ZH),
+		hInst,
+		name.data(),
 		IMAGE_ICON,
 		GetSystemMetrics(SM_CXSMICON),
 		GetSystemMetrics(SM_CYSMICON),
-		LR_SHARED);
-	return (*phIcon == NULL)? E_FAIL: S_OK;
+		fuLoad);
+	
+	return (*phIcon == nullptr) ? E_FAIL: S_OK;
 }
 
 STDAPI CLangBarItemButton::GetText(BSTR *pbstrText)
@@ -198,6 +236,22 @@ void CLangBarItemButton::UpdateWeaselStatus(weasel::Status stat)
 	if (stat.ascii_mode != ascii_mode) {
 		ascii_mode = stat.ascii_mode;
 		if (_pLangBarItemSink) {
+			_pLangBarItemSink->OnUpdate(TF_LBI_STATUS | TF_LBI_ICON);
+		}
+	}
+	if (_current_schema_zhung_icon != _style.current_ascii_icon)
+	{
+		_current_schema_zhung_icon = _style.current_zhung_icon;
+		if (_pLangBarItemSink)
+		{
+			_pLangBarItemSink->OnUpdate(TF_LBI_STATUS | TF_LBI_ICON);
+		}
+	}
+	if (_current_schema_ascii_icon != _style.current_ascii_icon)
+	{
+		_current_schema_ascii_icon = _style.current_ascii_icon;
+		if (_pLangBarItemSink)
+		{
 			_pLangBarItemSink->OnUpdate(TF_LBI_STATUS | TF_LBI_ICON);
 		}
 	}
@@ -276,7 +330,7 @@ BOOL WeaselTSF::_InitLanguageBar()
 	if (_pThreadMgr->QueryInterface(&pLangBarItemMgr) != S_OK)
 		return FALSE;
 
-	if ((_pLangBarButton = new CLangBarItemButton(this, GUID_LBI_INPUTMODE)) == NULL)
+	if ((_pLangBarButton = new CLangBarItemButton(this, GUID_LBI_INPUTMODE, _cand->style())) == NULL)
 		return FALSE;
 
 	if (pLangBarItemMgr->AddItem(_pLangBarButton) != S_OK)

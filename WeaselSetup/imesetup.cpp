@@ -232,7 +232,7 @@ int register_ime(const std::wstring& ime_path, bool register_ime, bool is_wow64,
 						DWORD len = sizeof(imeFile);
 						DWORD type = 0;
 						ret = RegQueryValueEx(hSubKey, L"Ime File", NULL, &type, (LPBYTE)imeFile, &len);
-						if (ret = ERROR_SUCCESS)
+						if (ret == ERROR_SUCCESS)
 						{
 							if (_wcsicmp(imeFile, L"weasel.ime") == 0)
 							{

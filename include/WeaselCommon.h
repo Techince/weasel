@@ -9,16 +9,9 @@
 #define WEASEL_REG_KEY L"Software\\Rime\\Weasel"
 #define RIME_REG_KEY L"Software\\Rime"
 
-#define USE_BLUR_UNDER_WINDOWS10
-#define USE_HILITE_MARK
-#define USE_CANDIDATE_BORDER
 #define USE_MOUSE_EVENTS
-//#define USE_THEME_DARK
-//#define CLIP_SHADOW_UNDER_BACK_COLOR
 //#define USE_MOUSE_HOVER
 //#define USE_SHARP_COLOR_CODE
-// #define USE_THEME_DARK
-#define USE_PAGER_MARK
 
 //#define _DEBUG_
 namespace weasel
@@ -282,16 +275,12 @@ namespace weasel
 		int label_font_point;
 		int comment_font_point;
 		bool inline_preedit;
-#ifdef USE_BLUR_UNDER_WINDOWS10
-		bool blur_window;
-#endif
 		bool display_tray_icon;
-		std::wstring current_icon;
+		std::wstring current_zhung_icon;
+		std::wstring current_ascii_icon;
 
 		std::wstring label_text_format;
-#ifdef USE_HILITE_MARK
 		std::wstring mark_text;
-#endif
 		// layout
 		int min_width;
 		int max_width;
@@ -309,14 +298,13 @@ namespace weasel
 		int shadow_radius;
 		int shadow_offset_x;
 		int shadow_offset_y;
+		bool vertical_auto_reverse;
 		// color scheme
 		int text_color;
 		int candidate_text_color;
 		int candidate_back_color;
 		int candidate_shadow_color;
-#ifdef USE_CANDIDATE_BORDER
 		int candidate_border_color;
-#endif
 		int label_text_color;
 		int comment_text_color;
 		int back_color;
@@ -328,18 +316,12 @@ namespace weasel
 		int hilited_candidate_text_color;
 		int hilited_candidate_back_color;
 		int hilited_candidate_shadow_color;
-#ifdef USE_CANDIDATE_BORDER
 		int hilited_candidate_border_color;
-#endif
 		int hilited_label_text_color;
 		int hilited_comment_text_color;
-#ifdef USE_HILITE_MARK
 		int hilited_mark_color;
-#endif
-#ifdef USE_PAGER_MARK
 		int prevpage_color;
 		int nextpage_color;
-#endif /*  USE_PAGER_MARK */
 		// per client
 		int client_caps;
 
@@ -352,16 +334,12 @@ namespace weasel
 			inline_preedit(false),
 			align_type(ALIGN_BOTTOM),
 			preedit_type(COMPOSITION),
-#ifdef USE_BLUR_UNDER_WINDOWS10
-			blur_window(false),
-#endif
 			display_tray_icon(false),
-			current_icon(),
+			current_zhung_icon(),
+			current_ascii_icon(),
 
 			label_text_format(L"%s."),
-#ifdef USE_HILITE_MARK
 			mark_text(),
-#endif
 			layout_type(LAYOUT_VERTICAL),
 			vertical_text_left_to_right(false),
 			vertical_text_with_wrap(false),
@@ -381,13 +359,12 @@ namespace weasel
 			shadow_radius(0),
 			shadow_offset_x(0),
 			shadow_offset_y(0),
+			vertical_auto_reverse(false),
 			text_color(0),
 			candidate_text_color(0),
 			candidate_back_color(0),
 			candidate_shadow_color(0),
-#ifdef USE_CANDIDATE_BORDER
 			candidate_border_color(0),
-#endif
 			label_text_color(0),
 			comment_text_color(0),
 			back_color(0),
@@ -399,18 +376,12 @@ namespace weasel
 			hilited_candidate_text_color(0),
 			hilited_candidate_back_color(0),
 			hilited_candidate_shadow_color(0),
-#ifdef USE_CANDIDATE_BORDER
 			hilited_candidate_border_color(0),
-#endif
 			hilited_label_text_color(0),
 			hilited_comment_text_color(0),
-#ifdef USE_HILITE_MARK
 			hilited_mark_color(0),
-#endif
-#ifdef USE_PAGER_MARK
 			prevpage_color(0),
 			nextpage_color(0),
-#endif
 			client_caps(0) {}
 		bool operator!=(const UIStyle& st)
 		{
@@ -428,14 +399,10 @@ namespace weasel
 					|| label_font_point != st.label_font_point
 					|| comment_font_point != st.comment_font_point
 					|| inline_preedit != st.inline_preedit
-#ifdef USE_BLUR_UNDER_WINDOWS10
-					|| blur_window != st.blur_window
-#endif
-#ifdef USE_HILITE_MARK
 					|| mark_text != st.mark_text
-#endif
 					|| display_tray_icon != st.display_tray_icon
-					|| current_icon != st.current_icon
+					|| current_zhung_icon != st.current_zhung_icon
+					|| current_ascii_icon != st.current_ascii_icon
 					|| label_text_format != st.label_text_format
 					|| min_width != st.min_width
 					|| max_width != st.max_width
@@ -453,14 +420,13 @@ namespace weasel
 					|| shadow_radius != st.shadow_radius
 					|| shadow_offset_x != st.shadow_offset_x
 					|| shadow_offset_y != st.shadow_offset_y
+					|| vertical_auto_reverse != st.vertical_auto_reverse
 					|| text_color != st.text_color
 					|| candidate_text_color != st.candidate_text_color
 					|| candidate_back_color != st.candidate_back_color
 					|| candidate_shadow_color != st.candidate_shadow_color
-#ifdef USE_CANDIDATE_BORDER
 					|| candidate_border_color != st.candidate_border_color
 					|| hilited_candidate_border_color != st.hilited_candidate_border_color
-#endif
 					|| label_text_color != st.label_text_color
 					|| comment_text_color != st.comment_text_color
 					|| back_color != st.back_color
@@ -474,13 +440,9 @@ namespace weasel
 					|| hilited_candidate_shadow_color != st.hilited_candidate_shadow_color
 					|| hilited_label_text_color != st.hilited_label_text_color
 					|| hilited_comment_text_color != st.hilited_comment_text_color
-#ifdef USE_HILITE_MARK
 					|| hilited_mark_color != st.hilited_mark_color
-#endif
-#ifdef USE_PAGER_MARK
 					|| prevpage_color != st.prevpage_color
 					|| nextpage_color != st.nextpage_color
-#endif /* USE_PAGER_MARK */
 					);
 		}
 	};
@@ -498,15 +460,11 @@ namespace boost {
 			ar & s.comment_font_point;
 			ar & s.inline_preedit;
 			ar & s.align_type;
-#ifdef USE_BLUR_UNDER_WINDOWS10
-			ar & s.blur_window;
-#endif
-#ifdef USE_HILITE_MARK
 			ar & s.mark_text;
-#endif
 			ar & s.preedit_type;
 			ar & s.display_tray_icon;
-			ar & s.current_icon;
+			ar & s.current_zhung_icon;
+			ar & s.current_ascii_icon;
 			ar & s.label_text_format;
 			// layout
 			ar & s.layout_type;
@@ -528,14 +486,13 @@ namespace boost {
 			ar & s.shadow_radius;
 			ar & s.shadow_offset_x;
 			ar & s.shadow_offset_y;
+			ar & s.vertical_auto_reverse;
 			// color scheme
 			ar & s.text_color;
 			ar & s.candidate_text_color;
 			ar & s.candidate_back_color;
 			ar & s.candidate_shadow_color;
-#ifdef USE_CANDIDATE_BORDER
 			ar & s.candidate_border_color;
-#endif
 			ar & s.label_text_color;
 			ar & s.comment_text_color;
 			ar & s.back_color;
@@ -547,18 +504,12 @@ namespace boost {
 			ar & s.hilited_candidate_text_color;
 			ar & s.hilited_candidate_back_color;
 			ar & s.hilited_candidate_shadow_color;
-#ifdef USE_CANDIDATE_BORDER
 			ar & s.hilited_candidate_border_color;
-#endif
 			ar & s.hilited_label_text_color;
 			ar & s.hilited_comment_text_color;
-#ifdef USE_HILITE_MARK
 			ar & s.hilited_mark_color;
-#endif
-#ifdef USE_PAGER_MARK
 			ar & s.prevpage_color;
 			ar & s.nextpage_color;
-#endif
 			// per client
 			ar & s.client_caps;
 		}

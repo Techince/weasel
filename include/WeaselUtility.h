@@ -60,16 +60,35 @@ std::wstring WeaselUserDataPath();
 const char* weasel_shared_data_dir();
 const char* weasel_user_data_dir();
 
-inline std::string to_byte_string(const std::wstring& input)
+inline std::string to_string(const std::wstring& input, int code_page = CP_ACP)
 {
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-	return converter.to_bytes(input);
+	auto len = WideCharToMultiByte(code_page, 0, input.c_str(), -1, nullptr, 0, nullptr, nullptr);
+	std::string temp;
+
+	if (len > 0)
+	{
+		temp.resize(len);
+		WideCharToMultiByte(code_page, 0, input.c_str(), -1, &temp[0], len, nullptr, nullptr);
+		temp = temp.data();
+	}
+
+	return temp;
 }
 
-inline std::wstring to_wide_string(const std::string& input)
+inline std::wstring to_wstring(const std::string& input, int code_page = CP_ACP)
 {
-	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-	return converter.from_bytes(input);
+	auto len = MultiByteToWideChar(code_page, 0, input.c_str(), -1, nullptr, 0);
+	std::wstring temp;
+
+	if (len > 0)
+	{
+		temp.resize(len);
+		MultiByteToWideChar(code_page, 0, input.c_str(), -1, &temp[0], len);
+		temp = temp.data();
+	}
+
+	return temp;
 }
+
 // resource
 std::string GetCustomResource(const char *name, const char *type);
