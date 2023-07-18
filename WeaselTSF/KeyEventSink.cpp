@@ -17,9 +17,9 @@ void WeaselTSF::_ProcessKeyEvent(WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 		*pfEaten = FALSE;
 	}
 	else
-    {
+    	{
 		*pfEaten = (BOOL) m_client.ProcessKeyEvent(ke);
-    }
+    	}
 }
 
 STDAPI WeaselTSF::OnSetFocus(BOOL fForeground)
@@ -52,7 +52,6 @@ STDAPI WeaselTSF::OnTestKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lPar
 		return S_OK;
 	}
 	_ProcessKeyEvent(wParam, lParam, pfEaten);
-	_UpdateComposition(pContext);
 	if (*pfEaten)
 		_fTestKeyDownPending = TRUE;
 	return S_OK;
@@ -62,15 +61,15 @@ STDAPI WeaselTSF::OnKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam, 
 {
 	_fTestKeyUpPending = FALSE;
 	if (_fTestKeyDownPending)
-    {
+    	{
 		_fTestKeyDownPending = FALSE;
 		*pfEaten = TRUE;
-    }
+    	}
 	else
-    {
-		_ProcessKeyEvent(wParam, lParam, pfEaten);
-	    _UpdateComposition(pContext);
-    }
+    	{
+		_ProcessKeyEvent(wParam, lParam, pfEaten);	    
+    	}
+	_UpdateComposition(pContext);
 	return S_OK;
 } 
 
@@ -93,15 +92,15 @@ STDAPI WeaselTSF::OnKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BO
 {
 	_fTestKeyDownPending = FALSE;
 	if (_fTestKeyUpPending)
-    {
+    	{
 		_fTestKeyUpPending = FALSE;
 		*pfEaten = TRUE;
-    }
+    	}
 	else
-    {
+    	{
 		_ProcessKeyEvent(wParam, lParam, pfEaten);
-        _UpdateComposition(pContext);
-    }
+        	_UpdateComposition(pContext);
+    	}
 	return S_OK;
 }
 
