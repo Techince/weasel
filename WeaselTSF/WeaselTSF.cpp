@@ -9,7 +9,7 @@
 #include <psapi.h>
 #include <filesystem>
 #pragma comment(lib, "psapi.lib")
-namespace fs = std::filesystem;
+namespace fs = boost::filesystem;
 
 static void error_message(const WCHAR *msg)
 {
