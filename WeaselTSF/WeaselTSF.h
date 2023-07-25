@@ -183,4 +183,6 @@ private:
 
 	// guidatom for the display attibute.
 	TfGuidAtom _gaDisplayAttributeInput;
+
+	bool _WinWord{};
 };
