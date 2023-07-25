@@ -7,7 +7,7 @@
 #include "Compartment.h"
 #include "ResponseParser.h"
 #include <psapi.h>
-#include <boost/filesystem>
+#include <boost/filesystem.hpp>
 #pragma comment(lib, "psapi.lib")
 namespace fs = boost::filesystem;
 
