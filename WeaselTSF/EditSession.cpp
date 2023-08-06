@@ -29,27 +29,23 @@ STDAPI WeaselTSF::DoEditSession(TfEditCookie ec)
 		}
 		if (_status.composing && !_IsComposing())
 		{
-			_StartComposition(_pEditSessionContext, _fCUASWorkaroundEnabled && !config.inline_preedit);
+			_StartComposition(_pEditSessionContext, GetBit(3) && !config.inline_preedit);	// _bitset[3]: _fCUASWorkaroundEnabled
 		}
 		else if (!_status.composing && _IsComposing())
 		{
 			_EndComposition(_pEditSessionContext, true);
 		}
-		if (_IsComposing() && config.inline_preedit)
+		if (_IsComposing() && config.inline_preedit && !GetBit(11))	// _bitset[11]: _SkipFirstDownEventInPreedit
 		{
 			_ShowInlinePreedit(_pEditSessionContext, context);
+			SetBit(13);						// _bitset[13]: _InlinePreedit
 		}
-		if (_WinWord)
-		{
-			_UpdateUI(*context, _status);
-			_UpdateCompositionWindow(_pEditSessionContext);
-		}
-		else
+		if (!GetBit(10))						// _bitset[10]: _FirstComposition
 		{
 			_UpdateCompositionWindow(_pEditSessionContext);
-			_UpdateUI(*context, _status);
 		}
 	}
+	_UpdateUI(*context, _status);
 
 	return TRUE;
 }
