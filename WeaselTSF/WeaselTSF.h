@@ -3,7 +3,7 @@
 #include <WeaselCommon.h>
 #include "Globals.h"
 #include "WeaselIPC.h"
-import <bitset>;
+#include <bitset>
 
 class CCandidateList;
 class CLangBarItemButton;
