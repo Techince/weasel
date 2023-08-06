@@ -26,10 +26,6 @@ WeaselTSF::WeaselTSF()
 
 	_dwTextEditSinkCookie = TF_INVALID_COOKIE;
 	_dwTextLayoutSinkCookie = TF_INVALID_COOKIE;
-	_fTestKeyDownPending = FALSE;
-	_fTestKeyUpPending = FALSE;
-
-	_fCUASWorkaroundTested = _fCUASWorkaroundEnabled = FALSE;
 
 	_cand = new CCandidateList(this);
 	SetBit(8);	// _bitset[8]: _SupportDisplayAttribute
