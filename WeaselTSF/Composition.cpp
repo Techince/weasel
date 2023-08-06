@@ -73,6 +73,7 @@ void WeaselTSF::_StartComposition(com_ptr<ITfContext> pContext, BOOL fCUASWorkar
 	{
 		HRESULT hr;
 		pContext->RequestEditSession(_tfClientId, pStartCompositionEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
+		SetBit(9);		// _bitset[9]: _BeginComposition
 	}
 }
 
@@ -99,7 +100,10 @@ STDAPI CEndCompositionEditSession::DoEditSession(TfEditCookie ec)
 	/* Clear the dummy text we set before, if any. */
 	if (_pComposition == nullptr) return S_OK;
 
-	_pTextService->_ClearCompositionDisplayAttributes(ec, _pContext);
+	if (_pTextService->GetBit(8))	// _bitset[8]: _SupportDisplayAttribute
+	{
+		_pTextService->_ClearCompositionDisplayAttributes(ec, _pContext);
+	}
 
 	ITfRange *pCompositionRange;
 	if (_clear && _pComposition->GetRange(&pCompositionRange) == S_OK)
@@ -174,6 +178,23 @@ STDAPI CGetTextExtentEditSession::DoEditSession(TfEditCookie ec)
 
 	if ((_pContextView->GetTextExt(ec, pRange, &rc, &fClipped)) == S_OK && (rc.left != 0 || rc.top != 0))
 	{
+		if (_pTextService->GetBit(13))				// _bitset[13]: _InlinePreedit
+		{
+			static int left, last;
+			if (_pTextService->GetBit(9))			// _bitset[9]: _BeginComposition
+			{
+				left = last = rc.left;
+				_pTextService->ReSetBit(9);		// _bitset[9]: _BeginComposition
+			}
+			if (50 < abs(rc.left - last))
+			{
+				left = rc.left;
+			}
+			last = rc.left;
+			rc.right = left + rc.right - rc.left;
+			rc.left = left;
+		}
+		
 		// get the foreground window pos and check if rc from GetTextExt is out of window
 		if (_enhancedPosition)
 		{
@@ -221,12 +242,12 @@ void WeaselTSF::_SetCompositionPosition(const RECT &rc)
 {
 	/* Test if rect is valid.
 	 * If it is invalid during CUAS test, we need to apply CUAS workaround */
-	if (!_fCUASWorkaroundTested)
+	if (!GetBit(2))					// _bitset[2]: _fCUASWorkaroundTested
 	{
-		_fCUASWorkaroundTested = TRUE;
+		SetBit(2);				// _bitset[2]: _fCUASWorkaroundTested
 		if (rc.top == rc.bottom)
 		{
-			_fCUASWorkaroundEnabled = TRUE;
+			SetBit(3);			// _bitset[3]: _fCUASWorkaroundEnabled
 			return;
 		}
 	}
@@ -262,8 +283,12 @@ STDAPI CInlinePreeditEditSession::DoEditSession(TfEditCookie ec)
 	if ((_pComposition->GetRange(&pRangeComposition)) != S_OK)
 		return E_FAIL;
 
-	if ((pRangeComposition->SetText(ec, 0, preedit.c_str(), preedit.length())) != S_OK)
+	if (FAILED(pRangeComposition->SetText(ec, 0, preedit.c_str(), preedit.length())))
+	{
+		_pTextService->SetBit(12);	// _bitset[12]: _AutoCADTest
+		_pTextService->_AbortComposition();
 		return E_FAIL;
+	}
 
 	/* TODO: Check the availability and correctness of these values */
 	int sel_cursor = -1;
@@ -276,7 +301,10 @@ STDAPI CInlinePreeditEditSession::DoEditSession(TfEditCookie ec)
 		}
 	}
 
-	_pTextService->_SetCompositionDisplayAttributes(ec, _pContext, pRangeComposition);
+	if (_pTextService->GetBit(8))	// _bitset[8]: _SupportDisplayAttribute
+	{
+		_pTextService->_SetCompositionDisplayAttributes(ec, _pContext, pRangeComposition);
+	}
 
 	/* Set caret */
 	LONG cch;
@@ -389,7 +417,11 @@ STDAPI WeaselTSF::OnCompositionTerminated(TfEditCookie ecWrite, ITfComposition *
 
 void WeaselTSF::_AbortComposition(bool clear)
 {
-	m_client.ClearComposition();
+	if (!GetBit(12))		// _bitset[12]: _AutoCADTest
+		m_client.ClearComposition();
+	else
+		ReSetBit(12);		// _bitset[12]: _AutoCADTest
+
 	if (_IsComposing()) {
 		_EndComposition(_pEditSessionContext, clear);
 	}
