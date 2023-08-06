@@ -238,7 +238,7 @@ void CCandidateList::UpdateUI(const Context & ctx, const Status & status)
 		_UpdateUIElement();
 
 	if (status.composing)
-		Show(_pbShow);
+		Show(_pbShow && !_tsf->GetBit(10));		// _bitset[10]: _FirstCodeComposition
 	else
 		Show(FALSE);
 }
