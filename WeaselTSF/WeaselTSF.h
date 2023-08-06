@@ -3,6 +3,7 @@
 #include <WeaselCommon.h>
 #include "Globals.h"
 #include "WeaselIPC.h"
+import <bitset>;
 
 class CCandidateList;
 class CLangBarItemButton;
@@ -156,7 +157,6 @@ private:
 	com_ptr<ITfContext> _pTextEditSinkContext;
 	DWORD _dwTextEditSinkCookie, _dwTextLayoutSinkCookie;
 	BYTE _lpbKeyState[256];
-	BOOL _fTestKeyDownPending, _fTestKeyUpPending;
 
 	com_ptr<ITfContext> _pEditSessionContext;
 	std::wstring _editSessionText;
@@ -172,7 +172,6 @@ private:
 	LONG _cRef;	// COM ref count
 
 	/* CUAS Candidate Window Position Workaround */
-	BOOL _fCUASWorkaroundTested, _fCUASWorkaroundEnabled;
 
 	/* Weasel Related */
 	weasel::Client m_client;
@@ -184,5 +183,21 @@ private:
 	// guidatom for the display attibute.
 	TfGuidAtom _gaDisplayAttributeInput;
 
-	bool _WinWord{};
+	// _bitset[0]:  _fTestKeyDownPending
+	// _bitset[1]:  _fTestKeyUpPending
+	// _bitset[2]:  _fCUASWorkaroundTested
+	// _bitset[3]:  _fCUASWorkaroundEnabled
+	// _bitset[4]:  _daemon_enable
+	// _bitset[5]:  _ascii_mode
+	// _bitset[6]:  _full_shape
+	// _bitset[7]:  _ascii_punct
+	// _bitset[8]:  _SupportDisplayAttribute
+	// _bitset[9]:  _BeginComposition
+	// _bitset[10]: _FirstComposition
+	// _bitset[11]: _SkipFirstDownEventInPreedit
+	// _bitset[12]: _AutoCADTest
+	// _bitset[13]: _InlinePreedit
+	// _bitset[14]: 
+	// _bitset[15]: _InitInputMethodState
+	std::bitset<32> _bitset{};
 };
