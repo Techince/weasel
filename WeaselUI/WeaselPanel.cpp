@@ -722,6 +722,8 @@ bool WeaselPanel::_DrawCandidates(CDCHandle &dc, bool back)
 //draw client area
 void WeaselPanel::DoPaint(CDCHandle dc)
 {
+	// 手动添加WS_EX_LAYERED扩展样式
+	ModifyStyleEx(0, WS_EX_LAYERED);
 	GetClientRect(&rcw);
 	// prepare memDC
 	CDCHandle hdc = ::GetDC(m_hWnd);
