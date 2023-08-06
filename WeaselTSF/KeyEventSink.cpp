@@ -45,38 +45,74 @@ STDAPI WeaselTSF::OnSetFocus(BOOL fForeground)
 
 STDAPI WeaselTSF::OnTestKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	_fTestKeyUpPending = FALSE;
-	if (_fTestKeyDownPending)
+	ReSetBit(1);					// _bitset[1]: _fTestKeyUpPending		
+	if (GetBit(0))					// _bitset[0]: _fTestKeyDownPending
 	{
 		*pfEaten = TRUE;
 		return S_OK;
 	}
+	if (lParam == 0x4000'0001)
+	{
+		SetBit(12);				// _bitset[12]: _AutoCADTest
+		if (_pComposition)
+		{
+			SetBit(0);			// _bitset[0]:  _fTestKeyDownPending
+			*pfEaten = TRUE;
+			return S_OK;
+		}
+	}
 	_ProcessKeyEvent(wParam, lParam, pfEaten);
+	if (!_pComposition && wParam <= 'Z' && 'A' <= wParam)
+	{
+		SetBit(10);				// _bitset[10]: _FirstComposition
+		_UpdateComposition(pContext);		
+	}
 	if (*pfEaten)
-		_fTestKeyDownPending = TRUE;
+	{
+		SetBit(0);				// _bitset[0]:  _fTestKeyDownPending
+	}
 	return S_OK;
 }
 
 STDAPI WeaselTSF::OnKeyDown(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	_fTestKeyUpPending = FALSE;
-	if (_fTestKeyDownPending)
-    	{
-		_fTestKeyDownPending = FALSE;
+	ReSetBit(1);					// _bitset[1]: _fTestKeyUpPending
+	ReSetBit(11);					// _bitset[11]: _SkipFirstDownEventInPreedit
+	if (GetBit(0))					// _bitset[0]: _fTestKeyDownPending
+	{
+		ReSetBit(0);				// _bitset[0]: _fTestKeyDownPending
 		*pfEaten = TRUE;
-    	}
+		if (lParam == 0)
+		{
+			SetBit(12);			// _bitset[12]: _AutoCADTest
+		}
+		if (GetBit(10))				// _bitset[10]: _FirstComposition
+		{
+			ReSetBit(10);			// _bitset[10]: _FirstComposition
+			SetBit(11);			// _bitset[11]: _SkipFirstDownEventInPreedit
+		}
+	}
 	else
-    	{
-		_ProcessKeyEvent(wParam, lParam, pfEaten);	    
-    	}
+	{
+		if (lParam == 0x4000'0001)
+		{
+			*pfEaten = TRUE;
+			SetBit(12);			// _bitset[12]: _AutoCADTest
+			_EndComposition(pContext, true);
+		}
+		else
+		{
+			_ProcessKeyEvent(wParam, lParam, pfEaten);
+		}		
+	}
 	_UpdateComposition(pContext);
 	return S_OK;
 } 
 
 STDAPI WeaselTSF::OnTestKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	_fTestKeyDownPending = FALSE;
-	if (_fTestKeyUpPending)
+	ReSetBit(0);					// _bitset[0]: _fTestKeyDownPending
+	if (GetBit(1))					// _bitset[1]: _fTestKeyUpPending
 	{
 		*pfEaten = TRUE;
 		return S_OK;
@@ -84,23 +120,25 @@ STDAPI WeaselTSF::OnTestKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lParam
 	_ProcessKeyEvent(wParam, lParam, pfEaten);
 	_UpdateComposition(pContext);
 	if (*pfEaten)
-		_fTestKeyUpPending = TRUE;
+	{
+		SetBit(1);				// _bitset[1]: _fTestKeyUpPending
+	}
 	return S_OK;
 }
 
 STDAPI WeaselTSF::OnKeyUp(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	_fTestKeyDownPending = FALSE;
-	if (_fTestKeyUpPending)
-    	{
-		_fTestKeyUpPending = FALSE;
+	ReSetBit(0);					// _bitset[0]: _fTestKeyDownPending
+	if (GetBit(1))					// _bitset[1]: _fTestKeyUpPending
+	{
+		ReSetBit(1);				// _bitset[1]: _fTestKeyUpPending
 		*pfEaten = TRUE;
-    	}
+	}
 	else
-    	{
+	{
 		_ProcessKeyEvent(wParam, lParam, pfEaten);
-        	_UpdateComposition(pContext);
-    	}
+		_UpdateComposition(pContext);
+	}
 	return S_OK;
 }
 
