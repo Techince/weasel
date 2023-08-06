@@ -36,24 +36,9 @@ WeaselTSF::WeaselTSF()
 	_fCUASWorkaroundTested = _fCUASWorkaroundEnabled = FALSE;
 
 	_cand = new CCandidateList(this);
+	SetBit(8);	// _bitset[8]: _SupportDisplayAttribute
 
 	DllAddRef();
-
-	auto pid = GetCurrentProcessId();
-
-	auto hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid);
-
-	std::wstring name;
-	name.reserve(MAX_PATH);
-
-	GetProcessImageFileName(hProcess, &name[0], name.capacity());
-	name = &name[0];
-
-	CloseHandle(hProcess);
-	if (fs::path(name).filename().wstring() == L"WINWORD.EXE")
-	{
-		_WinWord = true;
-	}
 }
 
 WeaselTSF::~WeaselTSF()
@@ -162,10 +147,10 @@ STDAPI WeaselTSF::ActivateEx(ITfThreadMgr *pThreadMgr, TfClientId tfClientId, DW
 	if (!_InitKeyEventSink())
 		goto ExitError;
 
-	//if (!_InitDisplayAttributeGuidAtom())
-	//	goto ExitError;
-	//	some app might init failed because it not provide DisplayAttributeInfo, like some opengl stuff
-	_InitDisplayAttributeGuidAtom();
+	if (!_InitDisplayAttributeGuidAtom())
+	{
+		ReSetBit(8);	// _bitset[8]: _SupportDisplayAttribute
+	}
 
 	if (!_InitPreservedKey())
 		goto ExitError;
