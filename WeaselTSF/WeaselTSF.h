@@ -118,6 +118,11 @@ public:
 
 	com_ptr<ITfThreadMgr> _GetThreadMgr() { return _pThreadMgr; }
 
+	void SetBit(int index) { _bitset.set(index); }
+	void SetBit(int index, bool value) { _bitset.set(index, value); }
+	void ReSetBit(int index) { _bitset.reset(index); }
+	bool GetBit(int index) const { return _bitset[index]; }
+
 private:
 	/* TSF Related */
 	BOOL _InitThreadMgrEventSink();
