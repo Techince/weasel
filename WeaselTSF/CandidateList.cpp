@@ -372,11 +372,11 @@ void WeaselTSF::_SelectCandidateOnCurrentPage(size_t index) {
   // simulate a VK_SELECT presskey to get data back and DoEditSession
   // the simulated keycode must be the one make TranslateKeycode Non-Zero return
   // fix me: are there any better ways?
-  INPUT inputs[2];
+  INPUT inputs[1];
   inputs[0].type = INPUT_KEYBOARD;
   inputs[0].ki = {VK_SELECT, 0, 0, 0, 0};
-  inputs[1].type = INPUT_KEYBOARD;
-  inputs[1].ki = {VK_SELECT, 0, KEYEVENTF_KEYUP, 0, 0};
+  ::SendInput(sizeof(inputs) / sizeof(INPUT), inputs, sizeof(INPUT));
+  inputs[0].ki.dwFlags = KEYEVENTF_KEYUP;
   ::SendInput(sizeof(inputs) / sizeof(INPUT), inputs, sizeof(INPUT));
 }
 
