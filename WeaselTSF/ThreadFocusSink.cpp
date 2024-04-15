@@ -13,11 +13,11 @@ STDMETHODIMP WeaselTSF::OnSetThreadFocus()
 #endif // TEST
 	if (m_client.Echo())
 	{
-		m_client.ProcessKeyEvent(0);
 		POINT pt{};
 		::GetCursorPos(&pt);
 		RECT rc{ pt.x, pt.y, pt.x, pt.y };
 		m_client.UpdateInputPosition(rc);
+		m_client.ProcessKeyEvent(0);
 		weasel::ResponseParser parser(NULL, NULL, &_status, NULL, &_cand->style());
 		bool ok = m_client.GetResponseData(std::ref(parser));
 		if (ok) {

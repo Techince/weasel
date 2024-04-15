@@ -110,7 +110,7 @@ HRESULT DirectWriteResources::InitResources(std::wstring_view label_font_face, i
 	DWRITE_FONT_WEIGHT fontWeight = DWRITE_FONT_WEIGHT_NORMAL;
 	DWRITE_FONT_STYLE fontStyle = DWRITE_FONT_STYLE_NORMAL;
 	// setup font weight and font style by the first unit of font_face setting string
-	_ParseFontFace(fontFaceStrVector[0], fontWeight, fontStyle);
+	_ParseFontFace(font_face.data(), fontWeight, fontStyle);
 	fontFaceStrVector[0] = std::regex_replace(fontFaceStrVector[0], std::wregex(STYLEORWEIGHT, std::wregex::icase), L"");
 	hResult = pDWFactory->CreateTextFormat(_mainFontFace.data(), NULL,
 		fontWeight, fontStyle, DWRITE_FONT_STRETCH_NORMAL,

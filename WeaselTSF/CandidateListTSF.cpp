@@ -111,11 +111,11 @@ void WeaselTSF::HandleUICallback(int* const sel, int* const hov, bool* const nex
 	{
 		_SelectCandidateOnCurrentPage(*sel);
 	}
-	if (hov)
+	else if (hov)
 	{
 		_HandleMouseHoverEvent(*hov);
 	}
-	if (next)
+	else if (next || scroll_next)
 	{
 		_HandleMousePageEvent(next, scroll_next);
 	}

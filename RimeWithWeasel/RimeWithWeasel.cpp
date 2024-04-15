@@ -834,7 +834,7 @@ bool RimeWithWeaselHandler::_Respond(RimeSessionId session_id, EatLine eat)
 		messages.emplace_back(std::format("status.disabled={}\n", status.is_disabled));
 		messages.emplace_back(std::format("status.full_shape={}\n", status.is_full_shape));
 		messages.emplace_back(std::format("status.ascii_punct={}\n", status.is_ascii_punct));		
-		messages.emplace_back(std::format("status.prediction={}\n", status.is_predictable));
+		messages.emplace_back(std::format("status.prediction={}\n", RimeGetOption(session_id, "prediction")));
 		messages.emplace_back(std::format("status.schema_id={}\n", status.schema_id));
 		if (m_global_ascii_mode && (session_status.status.is_ascii_mode != status.is_ascii_mode))
 		{
@@ -1402,7 +1402,7 @@ void RimeWithWeaselHandler::_GetStatus(weasel::Status& stat, RimeSessionId sessi
 		stat.disabled = !!status.is_disabled;
 		stat.full_shape = !!status.is_full_shape;
 		stat.ascii_punct = !!status.is_ascii_punct;
-		stat.prediction = !!status.is_predictable;
+		stat.prediction = !!RimeGetOption(session_id, "prediction");
 		if (schema_id != m_last_schema_id)
 		{
 			m_session_status_map[session_id].__synced = false;

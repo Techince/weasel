@@ -9,3 +9,6 @@ datetime_translator = require("datetime")
 calculator_translator = require("calculator")
 auto_select_phrase_processor = require("auto_select_phrase")
 start_translator = require("start")
+
+-- 数字、人民币大写，R 开头
+number_translator = require("number_translator")

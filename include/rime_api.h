@@ -30,7 +30,7 @@ extern "C" {
 #define RIME_API
 #endif /* _WIN32 */
 
-typedef uintptr_t RimeSessionId;
+using RimeSessionId = uint64_t;
 
 typedef int Bool;
 
@@ -164,7 +164,6 @@ typedef struct rime_status_t {
   Bool is_simplified;
   Bool is_traditional;
   Bool is_ascii_punct;
-  Bool is_predictable;
 } RimeStatus;
 
 typedef struct rime_candidate_list_iterator_t {
@@ -667,11 +666,12 @@ typedef struct rime_api_t {
   void (*get_sync_dir_s)(char* dir, size_t buffer_size);
 
   //! highlight a selection without committing
-  Bool(*highlight_candidate)(RimeSessionId session_id, size_t index);
+  Bool (*highlight_candidate)(RimeSessionId session_id, size_t index);
   //! highlight a selection without committing
-  Bool(*highlight_candidate_on_current_page)(RimeSessionId session_id, size_t index);
+  Bool (*highlight_candidate_on_current_page)(RimeSessionId session_id,
+                                              size_t index);
 
-  Bool(*change_page)(RimeSessionId session_id, Bool backward);
+  Bool (*change_page)(RimeSessionId session_id, Bool backward);
 } RimeApi;
 
 //! API entry

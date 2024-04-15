@@ -393,7 +393,8 @@ local function calculator(input, seg)
   -- 防止危险操作，禁用os和io命名空间
   if expe:find("i?os?%.") then return end
   -- return语句保证了只有合法的Lua表达式才可执行
-  local result = load("return "..expe)()
+  local s, result = pcall(load("return "..expe))
+  if not s then return end
   if result == nil then return end
   
   result = serialize(result)

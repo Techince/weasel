@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include <WeaselCommon.h>
 #include "cmath"
+#include "test.h"
 export module Composition;
 import WeaselTSF;
 import EditSession;
@@ -152,6 +153,10 @@ STDAPI CStartCompositionEditSession::DoEditSession(TfEditCookie ec)
 		tfSelection.style.ase = TF_AE_NONE;
 		tfSelection.style.fInterimChar = FALSE;
 		auto ret = _pContext->SetSelection(ec, 1, &tfSelection);
+#ifdef TEST
+		std::wstring buffer{ std::format(L"From CStartCompositionEditSession::DoEditSessionn. ret = 0x{:X}\n", static_cast<unsigned>(ret)) };
+		_pTextService->WriteConsole(buffer);
+#endif // TEST
 	}
 
 	return S_OK;
@@ -174,6 +179,10 @@ STDAPI CEndCompositionEditSession::DoEditSession(TfEditCookie ec)
 	}
 
 	auto hr = _pComposition->EndComposition(ec);
+#ifdef TEST
+	std::wstring buffer{ std::format(L"From CEndCompositionEditSession::DoEditSessionn. hr = 0x{:X}\n", static_cast<unsigned>(hr)) };
+	_pTextService->WriteConsole(buffer);
+#endif // TEST
 	_pTextService->_FinalizeComposition();
 	return hr;
 }
@@ -197,6 +206,12 @@ STDAPI CGetTextExtentEditSession::DoEditSession(TfEditCookie ec)
 	_pTextService->SetHWND(hwnd);
 	_pContextView->GetScreenExt(&rcExt);
 	hr = _pContextView->GetTextExt(ec, pRange, &rc, &fClipped);
+
+#ifdef TEST
+	std::wstring buffer{ std::format(L"From CGetTextExtentEditSession::DoEditSessionn. ret = 0x{:X}, rc = ({}, {}, {}, {})\n", 
+		static_cast<unsigned>(hr), rc.left, rc.top, rc.right, rc.bottom) };
+	_pTextService->WriteConsole(buffer);
+#endif // TEST
 
 	if ((hr == 0x80040057) ||
 		(hr == 0x80070057 && _pTextService->GetBit(WeaselFlag::AUTOCAD)))
